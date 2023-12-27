@@ -7,12 +7,6 @@ public class Casilla {
 	 * o un cazafantasmas
 	 */
 	private Personaje valor;
-	
-	/**
-	 * Valor que define si la casilla ha sido descubierta o no.
-	 * Si esta a true, la casilla ha sido descubierta, si esta a false no
-	 */
-	private boolean descubierto;
 
 	/**
 	 * Constructor por defecto de la clase casilla, recibe el personaje oculto dentro de la casilla
@@ -36,15 +30,6 @@ public class Casilla {
 	public String getImagen() {
 		return getValor().getImagen();
 	}
-
-	public boolean isDescubierta() {
-		return descubierto;
-	}
-	
-	public void setDescubierta(boolean estado) {
-		this.descubierto = estado;
-	}
-	
 	
 	
 }
