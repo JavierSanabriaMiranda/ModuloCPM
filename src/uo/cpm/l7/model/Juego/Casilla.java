@@ -24,6 +24,10 @@ public class Casilla {
 		return valor;
 	}
 	
+	public void setValor(Personaje personaje) {
+		this.valor = personaje;
+	}
+	
 	/**
 	 * @return Un String con el nombre de la imagen que representa al personaje contenido en la casilla
 	 */

@@ -21,7 +21,7 @@ public class Tablero {
 	/**
 	 * Lista de las casillas hacia las que se ha movido algun cazafantasmas
 	 */
-	private List<Casilla> enemigosEliminados;
+	private List<Personaje> enemigosEliminados;
 
 	/**
 	 * Número de filas del tablero
@@ -133,7 +133,7 @@ public class Tablero {
 	 *         cazafantasmas, guarda por tanto los fantasmas que han sido eliminados
 	 *         en la partida
 	 */
-	public List<Casilla> getEnemigosEliminados() {
+	public List<Personaje> getEnemigosEliminados() {
 		return enemigosEliminados;
 	}
 
@@ -178,12 +178,12 @@ public class Tablero {
 		// permite el movimiento y se retorna false
 		if (filaInicial - valor < 0 || tablero[filaInicial - valor][columnaInicial].getValor().equals(Personaje.BORDE))
 			return false;
+		
 		// Cuando el movimiento se realiza hacia un fantasma cualquiera y es válido se
-		// mueve el cazafantasmas y se borra al fantasma
-		// Antes de borrarse, se añade a la lista de enemigos eliminados
-		enemigosEliminados.add(tablero[filaInicial - valor][columnaInicial]);
-		tablero[filaInicial - valor][columnaInicial] = tablero[filaInicial][columnaInicial];
-		tablero[filaInicial][columnaInicial] = null;
+		// mueve el cazafantasmas y se borra al fantasma.	Antes de borrarse, se añade a la lista de enemigos eliminados
+		enemigosEliminados.add(tablero[filaInicial - valor][columnaInicial].getValor());
+		tablero[filaInicial - valor][columnaInicial].setValor(Personaje.CAZAFANTASMAS);
+		tablero[filaInicial][columnaInicial].setValor(Personaje.VACIO);
 		return true;
 	}
 
