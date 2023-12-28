@@ -186,5 +186,40 @@ public class Tablero {
 		tablero[filaInicial][columnaInicial].setValor(Personaje.VACIO);
 		return true;
 	}
+	
+	/**
+	 * Comprueba si se ha eliminado a un enemigo de cada tipo y además si se ha eliminado al fantasma lider. En función de eso da una 
+	 * recompensa u otra. Si no se ha obtenido premio, devuelve null
+	 *  
+	 * @return código del premio obtenido o null si no se ha obtenido ningun premio
+	 */
+	public String comprobarPremio() {
+		if (hayPremio())
+			if (enemigosEliminados.contains(Personaje.FANTASMA_LIDER))
+				return Juego.DESCUENTO_25;
+			else
+				return Juego.DESCUENTO_10;
+		else
+			return null;		
+	}
+	
+	/**
+	 * Comprueba si la partida ha terminado por completo con el máximo premio. Su finalidad es comprobar si hay que terminar
+	 * la partida aun cuando quedan todavía lanzamientos al dado
+	 * 
+	 * @return true si se ha completado el objetivo del juego (eliminar a un fantasma de cada tipo más el fantasma lider)
+	 */
+	public boolean juegoTerminaConPremio() {
+		return comprobarPremio().equals(Juego.DESCUENTO_25);
+	}
+	
+	/**
+	 * @return true si se ha eliminado a un fantasma de cada tipo
+	 */
+	private boolean hayPremio() {
+		return enemigosEliminados.contains(Personaje.FANTASMA_BASICO) && enemigosEliminados.contains(Personaje.FANTASMA_CALABAZA) 
+				&& enemigosEliminados.contains(Personaje.FANTASMA_MOMIA) && enemigosEliminados.contains(Personaje.FANTASMA_PIRATA)
+				&& enemigosEliminados.contains(Personaje.FANTASMA_ZOMBIE);
+	}
 
 }

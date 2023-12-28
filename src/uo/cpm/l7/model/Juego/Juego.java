@@ -18,6 +18,16 @@ public class Juego {
 	private static final int NUMERO_LANZAMIENTOS = 7;
 	
 	/**
+	 * Código del descuento del 25%
+	 */
+	public static final String DESCUENTO_25 = "EXTRA25";
+	
+	/**
+	 * Código del descuento del 10%
+	 */
+	public static final String DESCUENTO_10 = "EXTRA10";
+	
+	/**
 	 * Número de lanzamientos que le quedan al jugador
 	 */
 	private int numLanzamientos = NUMERO_LANZAMIENTOS;
@@ -33,15 +43,24 @@ public class Juego {
 	private Dado dado;
 	
 	/**
+	 * Atributo que marca si el juego ha finalizado o no. Si está a true el juego ha finalizado
+	 */
+	private boolean finalizado;
+	
+	/**
+	 * Guarda el premio en caso de que el jugador halla ganado alguno al finalizar la partida, en caso contrario
+	 * es null
+	 */
+	private String premio;
+	
+	/**
 	 * Constructor por defecto de la clase Juego, recibe como parámetro el tamaño del tablero de juego y el número
 	 * de lanzamientos al dado que tendrá el jugador
-	 * 
-	 * @param tam Tamaño del tablero de juego
-	 * @param numLanzamientos Número de lanzamientos que tendrá el jugador
 	 */
 	public Juego() {
 		this.dado = new Dado();
 		this.tablero = new Tablero(FILAS, COLUMNAS);
+		this.finalizado = false;
 	}
 	
 	/**
@@ -51,7 +70,9 @@ public class Juego {
 		this.dado = new Dado();
 		this.tablero.vaciarTablero();
 		this.tablero.inicializarTablero();
-	}
+		this.finalizado = false;
+		this.premio = null;
+}
 	
 	/**
 	 * Lanza una vez el dado, reduce por tanto el número de lanzamientos restantes
@@ -90,19 +111,27 @@ public class Juego {
 	}
 	
 	/**
-	 * Comprueba si la partida ha finalizado (si no hay más disparos restantes o se han eliminado a un fantasma de cada tipo
-	 * así como al fantasma lider
+	 * Comprueba si la partida ha finalizado, es decir, si no hay más disparos restantes o si se ha eliminado a un 
+	 * fantasma de cada tipo así como al fantasma lider aún habiendo disparos restantes
 	 */
 	public void comprobarFinalDeJuego() {
-		if (numLanzamientos == 0)
-			finalizarJuego();
+		if (numLanzamientos == 0 || tablero.juegoTerminaConPremio())
+			this.finalizado = true;
+		this.premio = tablero.comprobarPremio();
 	}
 	
+	/**
+	 * @return Número de lanzamientos restantes del dado
+	 */
 	public int getNumeroLanzamientos() {
 		return this.numLanzamientos;
 	}
 	
-	private void finalizarJuego() {
-		//TODO 
+	/**
+	 * @return true si la partida ha finalizado, false en caso contrario
+	 */
+	public boolean isFinalizado() {
+		return this.finalizado;
 	}
+
 }
