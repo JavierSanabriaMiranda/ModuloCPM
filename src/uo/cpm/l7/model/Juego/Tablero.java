@@ -189,6 +189,25 @@ public class Tablero {
 	}
 	
 	/**
+	 * Comprueba si al menos un cazafantasmas se puede desplazar en vertical 2 casillas, es decir, si se sale del tablero o cae
+	 * en un borde, en caso de que ninguno pueda desplazarse estas dos casillas, se fuerza un movimiento de 1 casilla
+	 * 
+	 * @return true si alguno de los cazafantasmas se puede mover 2 casillas, false en caso contrario
+	 */
+	public boolean comprobarMovimientoDe2Casillas() {
+		for (int i = 0; i < filas; i++)
+			for (int j = 0; j < columnas; j++) {
+				// Comprueba que el personaje sea un cazafantasmas
+				if (tablero[i][j].getValor().equals(Personaje.CAZAFANTASMAS))
+					// Si el cazafantasmas se puede mover dos casillas en vertical retorna true
+					if (i - 2 >= 0)
+						if (!tablero[i-2][j].getValor().equals(Personaje.BORDE))
+							return true;
+			}
+		return false;
+	}
+	
+	/**
 	 * Comprueba si se ha eliminado a un enemigo de cada tipo y además si se ha eliminado al fantasma lider. En función de eso da una 
 	 * recompensa u otra. Si no se ha obtenido premio, devuelve null
 	 *  
@@ -211,6 +230,8 @@ public class Tablero {
 	 * @return true si se ha completado el objetivo del juego (eliminar a un fantasma de cada tipo más el fantasma lider)
 	 */
 	public boolean juegoTerminaConPremio() {
+		if (comprobarPremio() == null)
+			return false;
 		return comprobarPremio().equals(Juego.DESCUENTO_25);
 	}
 	

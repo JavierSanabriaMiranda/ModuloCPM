@@ -1,5 +1,7 @@
 package uo.cpm.l7.model.Juego;
 
+import java.util.List;
+
 public class Juego {
 	
 	/**
@@ -70,6 +72,7 @@ public class Juego {
 		this.dado = new Dado();
 		this.tablero.vaciarTablero();
 		this.tablero.inicializarTablero();
+		this.numLanzamientos = NUMERO_LANZAMIENTOS;
 		this.finalizado = false;
 		this.premio = null;
 }
@@ -79,7 +82,12 @@ public class Juego {
 	 */
 	public void lanzarDado() {
 		if (numLanzamientos > 0) {
-			dado.lanzar();
+			// Si algun cazafantasmas se puede mover 2 casillas en vertical se randomiza el valor
+			if (comprobarMovimientoDe2Casillas())
+				dado.lanzar();
+			// Si ningun cazafantasmas se puede mover 2 casillas en vertical se fija el valor del dado a 1
+			else 
+				dado.setValor(1);
 			numLanzamientos--;
 		}
 	}
@@ -111,16 +119,6 @@ public class Juego {
 	}
 	
 	/**
-	 * Comprueba si la partida ha finalizado, es decir, si no hay más disparos restantes o si se ha eliminado a un 
-	 * fantasma de cada tipo así como al fantasma lider aún habiendo disparos restantes
-	 */
-	public void comprobarFinalDeJuego() {
-		if (numLanzamientos == 0 || tablero.juegoTerminaConPremio())
-			this.finalizado = true;
-		this.premio = tablero.comprobarPremio();
-	}
-	
-	/**
 	 * @return Número de lanzamientos restantes del dado
 	 */
 	public int getNumeroLanzamientos() {
@@ -128,10 +126,39 @@ public class Juego {
 	}
 	
 	/**
+	 * Comprueba si la partida ha finalizado, es decir, si no hay más disparos restantes o si se ha eliminado a un 
+	 * fantasma de cada tipo así como al fantasma lider aún habiendo disparos restantes
+	 */
+	private void comprobarFinalDeJuego() {
+		if (numLanzamientos == 0 || tablero.juegoTerminaConPremio())
+			this.finalizado = true;
+		this.premio = tablero.comprobarPremio();
+	}
+	
+	/**
+	 * Comprueba si al menos un cazafantasmas se puede desplazar en vertical 2 posiciones, en caso de que ninguno pueda, se fuerza 
+	 * que el valor del dado sea 1 para permitir seguir el juego
+	 * 
+	 * @return true si alguno de los cazafantasmas se puede mover 2 casillas, false en caso contrario
+	 */
+	private boolean comprobarMovimientoDe2Casillas() {
+		return tablero.comprobarMovimientoDe2Casillas();
+	}
+	
+	/**
 	 * @return true si la partida ha finalizado, false en caso contrario
 	 */
 	public boolean isFinalizado() {
+		comprobarFinalDeJuego();
 		return this.finalizado;
+	}
+	
+	public String getPremio() {
+		return this.premio;
+	}
+	
+	public List<Personaje> getEnemigosEliminados() {
+		return tablero.getEnemigosEliminados();
 	}
 
 }

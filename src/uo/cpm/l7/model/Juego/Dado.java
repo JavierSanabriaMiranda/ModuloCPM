@@ -7,11 +7,11 @@ public class Dado {
 	private int valor;
 	
 	/**
-	 * @return valor aleatorio entre 0 y 1
+	 * @return valor aleatorio entre 1 y 2
 	 */
-	public final int lanzar() {
+	public final void lanzar() {
 		Random random = new Random();
-		return random.nextInt(0, 2);
+		this.valor = random.nextInt(1, 3);
 	}
 	
 	/**
@@ -19,5 +19,12 @@ public class Dado {
 	 */
 	public final int getValor() {
 		return valor;
+	}
+	
+	/**
+	 * @param valor a establecer en el dado
+	 */
+	public void setValor(int valor) {
+		this.valor = valor;
 	}
 }
