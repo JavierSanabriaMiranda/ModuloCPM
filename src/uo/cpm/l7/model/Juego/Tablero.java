@@ -63,6 +63,7 @@ public class Tablero {
 	 * resto del tablero de forma aleatoria
 	 */
 	public void inicializarTablero() {
+		enemigosEliminados.clear();
 		// Se colocan en los bordes del tablero (Haciendo una escalera por ambos lados
 		// desde la primera fila)
 		// Casillas del tipo BORDE
