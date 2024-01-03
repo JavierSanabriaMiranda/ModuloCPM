@@ -25,12 +25,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
 import javax.swing.BoxLayout;
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.Box;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -92,6 +99,26 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel pnTituloJuegoEIdiomas;
 	private JPanel pnDadoDisponible;
 	private JLabel lbDadoDisponible;
+	private JPanel pnCatalogoHoteles;
+	private JPanel pnTituloYBotones;
+	private JPanel pnTituloCatalogoHoteles;
+	private JPanel pnBotonesCatalogo;
+	private JPanel pnBarraBusqueda;
+	private JScrollPane scpHoteles;
+	private JPanel pnHoteles;
+	private JToggleButton btAbrirFiltros;
+	private JButton btMisReservas;
+	private JTextField txBarraBusqueda;
+	private JButton btBuscar;
+	private JPanel pnFiltros;
+	private JComboBox<String> cbUbicaciones;
+	private JSlider slPrecio;
+	private JPanel pnEncantamientos;
+	private JPanel pnSliderPrecio;
+	private JLabel lbPrecio;
+	private JPanel pnBotonesYBusqueda;
+	private Component horizontalGlueBtCatalogo;
+	private Component horizontalStrutBtCatalogo;
 
 	/**
 	 * Create the frame.
@@ -105,7 +132,7 @@ public class VentanaPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1103, 656);
 		setMinimumSize(new Dimension(1100, 600));
-		
+
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
@@ -117,7 +144,7 @@ public class VentanaPrincipal extends JFrame {
 		localizar();
 	}
 
-	////////////////////// GETTERS DE COMPONENTES ////////////////////// 
+	////////////////////// GETTERS DE COMPONENTES //////////////////////
 
 	private JPanel getPanelVentanas() {
 		if (panelVentanas == null) {
@@ -128,6 +155,7 @@ public class VentanaPrincipal extends JFrame {
 			panelVentanas.add(getPnJuego(), "juego");
 			panelVentanas.add(getPnMenuInicio(), "menuInicio");
 			panelVentanas.add(getPnMenuJuego(), "menuJuego");
+			panelVentanas.add(getPnCatalogoHoteles(), "catalogoHoteles");
 		}
 		return panelVentanas;
 	}
@@ -251,6 +279,8 @@ public class VentanaPrincipal extends JFrame {
 			btIrAReservarMenu = new JButton();
 			btIrAReservarMenu.setMaximumSize(new Dimension(200, 100));
 			btIrAReservarMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
+			btIrAReservarMenu.setActionCommand("catalogoHoteles");
+			btIrAReservarMenu.addActionListener(pasaPantalla);
 		}
 		return btIrAReservarMenu;
 	}
@@ -312,14 +342,14 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return pnMenuJuego;
 	}
-	
+
 	private JPanel getPnTituloJuegoEIdiomas() {
 		if (pnTituloJuegoEIdiomas == null) {
 			pnTituloJuegoEIdiomas = new JPanel();
 			pnTituloJuegoEIdiomas.setBackground(Color.DARK_GRAY);
 			pnTituloJuegoEIdiomas.setLayout(new BorderLayout(0, 0));
 			pnTituloJuegoEIdiomas.add(getPnTituloJuego());
-			
+
 		}
 		return pnTituloJuegoEIdiomas;
 	}
@@ -492,7 +522,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return pnDado;
 	}
-	
+
 	private JPanel getPnDadoDisponible() {
 		if (pnDadoDisponible == null) {
 			pnDadoDisponible = new JPanel();
@@ -502,6 +532,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return pnDadoDisponible;
 	}
+
 	protected JLabel getLbDadoDisponible() {
 		if (lbDadoDisponible == null) {
 			lbDadoDisponible = new JLabel("");
@@ -622,19 +653,215 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return pnTitulo;
 	}
-	
-	////////////////////// GETTERS DE ATRIBUTOS ////////////////////// 
-	
+
+	////////////////////// GETTERS DE ATRIBUTOS //////////////////////
+
 	/**
 	 * @return ubicacion actual en la que se localiza la interfaz
 	 */
 	protected Locale getUbicacion() {
 		return this.ubicacion;
 	}
-	
-	
-	////////////////////// INTERNACIONALIZACION ////////////////////// 
-	
+
+	private JPanel getPnCatalogoHoteles() {
+		if (pnCatalogoHoteles == null) {
+			pnCatalogoHoteles = new JPanel();
+			pnCatalogoHoteles.setBackground(Color.DARK_GRAY);
+			pnCatalogoHoteles.setLayout(new BorderLayout(0, 0));
+			pnCatalogoHoteles.add(getPnTituloYBotones(), BorderLayout.NORTH);
+			pnCatalogoHoteles.add(getScpHoteles());
+		}
+		return pnCatalogoHoteles;
+	}
+
+	private JPanel getPnTituloYBotones() {
+		if (pnTituloYBotones == null) {
+			pnTituloYBotones = new JPanel();
+			pnTituloYBotones.setBackground(Color.DARK_GRAY);
+			pnTituloYBotones.setLayout(new BorderLayout(0, 0));
+			pnTituloYBotones.add(getPnTituloCatalogoHoteles(), BorderLayout.NORTH);
+			pnTituloYBotones.add(getPnBotonesCatalogo());
+		}
+		return pnTituloYBotones;
+	}
+
+	private JPanel getPnTituloCatalogoHoteles() {
+		if (pnTituloCatalogoHoteles == null) {
+			pnTituloCatalogoHoteles = new JPanel();
+			pnTituloCatalogoHoteles.setBackground(Color.DARK_GRAY);
+			pnTituloCatalogoHoteles.setLayout(new BorderLayout(0, 0));
+		}
+		return pnTituloCatalogoHoteles;
+	}
+
+	private JPanel getPnBotonesCatalogo() {
+		if (pnBotonesCatalogo == null) {
+			pnBotonesCatalogo = new JPanel();
+			pnBotonesCatalogo.setBackground(Color.DARK_GRAY);
+			pnBotonesCatalogo.setLayout(new BorderLayout(0, 0));
+			pnBotonesCatalogo.add(getPnFiltros(), BorderLayout.SOUTH);
+			pnBotonesCatalogo.add(getPnBotonesYBusqueda());
+		}
+		return pnBotonesCatalogo;
+	}
+
+	private JPanel getPnBarraBusqueda() {
+		if (pnBarraBusqueda == null) {
+			pnBarraBusqueda = new JPanel();
+			pnBarraBusqueda.setMaximumSize(new Dimension(700, 200));
+			pnBarraBusqueda.setBackground(Color.DARK_GRAY);
+			pnBarraBusqueda.setLayout(new BorderLayout(0, 0));
+			pnBarraBusqueda.add(getTxBarraBusqueda(), BorderLayout.CENTER);
+			pnBarraBusqueda.add(getBtBuscar(), BorderLayout.EAST);
+		}
+		return pnBarraBusqueda;
+	}
+
+	private JScrollPane getScpHoteles() {
+		if (scpHoteles == null) {
+			scpHoteles = new JScrollPane();
+			scpHoteles.setBackground(Color.DARK_GRAY);
+			scpHoteles.setViewportView(getPnHoteles());
+		}
+		return scpHoteles;
+	}
+
+	private JPanel getPnHoteles() {
+		if (pnHoteles == null) {
+			pnHoteles = new JPanel();
+			pnHoteles.setBackground(Color.DARK_GRAY);
+			pnHoteles.setLayout(new GridLayout(0, 2, 0, 0));
+		}
+		return pnHoteles;
+	}
+
+	private JToggleButton getBtAbrirFiltros() {
+		if (btAbrirFiltros == null) {
+			btAbrirFiltros = new JToggleButton("");
+			btAbrirFiltros.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					mostrarUOcultarFiltros();
+				}
+			});
+			btAbrirFiltros.setFont(new Font("Arial", Font.PLAIN, 14));
+		}
+		return btAbrirFiltros;
+	}
+
+	private JButton getBtMisReservas() {
+		if (btMisReservas == null) {
+			btMisReservas = new JButton("");
+			btMisReservas.setFont(new Font("Arial", Font.PLAIN, 14));
+		}
+		return btMisReservas;
+	}
+
+	private JButton getBtBuscar() {
+		if (btBuscar == null) {
+			btBuscar = new JButton("");
+			btBuscar.setBackground(Color.DARK_GRAY);
+			btBuscar.setMinimumSize(new Dimension(50, 50));
+			btBuscar.setMaximumSize(new Dimension(50, 50));
+		}
+		return btBuscar;
+	}
+
+	private JTextField getTxBarraBusqueda() {
+		if (txBarraBusqueda == null) {
+			txBarraBusqueda = new JTextField();
+			txBarraBusqueda.setColumns(10);
+		}
+		return txBarraBusqueda;
+	}
+
+	private JPanel getPnFiltros() {
+		if (pnFiltros == null) {
+			pnFiltros = new JPanel();
+			pnFiltros.setBackground(Color.DARK_GRAY);
+			pnFiltros.setLayout(new BoxLayout(pnFiltros, BoxLayout.X_AXIS));
+			pnFiltros.add(getCbUbicaciones());
+			pnFiltros.add(getPnSliderPrecio());
+			pnFiltros.add(getPnEncantamientos());
+		}
+		return pnFiltros;
+	}
+
+	private JComboBox<String> getCbUbicaciones() {
+		if (cbUbicaciones == null) {
+			cbUbicaciones = new JComboBox<String>();
+			cbUbicaciones.setBackground(Color.DARK_GRAY);
+		}
+		return cbUbicaciones;
+	}
+
+	private JSlider getSlPrecio() {
+		if (slPrecio == null) {
+			slPrecio = new JSlider();
+		}
+		return slPrecio;
+	}
+
+	private JPanel getPnEncantamientos() {
+		if (pnEncantamientos == null) {
+			pnEncantamientos = new JPanel();
+			pnEncantamientos.setBackground(Color.DARK_GRAY);
+			pnEncantamientos.setLayout(new GridLayout(2, 0, 0, 0));
+		}
+		return pnEncantamientos;
+	}
+
+	private JPanel getPnSliderPrecio() {
+		if (pnSliderPrecio == null) {
+			pnSliderPrecio = new JPanel();
+			pnSliderPrecio.setBackground(Color.DARK_GRAY);
+			pnSliderPrecio.setLayout(new BoxLayout(pnSliderPrecio, BoxLayout.Y_AXIS));
+			pnSliderPrecio.add(getLbPrecio());
+			pnSliderPrecio.add(getSlPrecio());
+		}
+		return pnSliderPrecio;
+	}
+
+	private JLabel getLbPrecio() {
+		if (lbPrecio == null) {
+			lbPrecio = new JLabel("");
+			lbPrecio.setAlignmentX(Component.CENTER_ALIGNMENT);
+			lbPrecio.setForeground(Color.WHITE);
+			lbPrecio.setFont(new Font("Arial", Font.PLAIN, 13));
+		}
+		return lbPrecio;
+	}
+
+	private JPanel getPnBotonesYBusqueda() {
+		if (pnBotonesYBusqueda == null) {
+			pnBotonesYBusqueda = new JPanel();
+			pnBotonesYBusqueda.setBackground(Color.DARK_GRAY);
+			pnBotonesYBusqueda.setLayout(new BoxLayout(pnBotonesYBusqueda, BoxLayout.X_AXIS));
+			pnBotonesYBusqueda.add(getBtAbrirFiltros());
+			pnBotonesYBusqueda.add(getHorizontalGlueBtCatalogo());
+			pnBotonesYBusqueda.add(getPnBarraBusqueda());
+			pnBotonesYBusqueda.add(getHorizontalStrutBtCatalogo());
+			pnBotonesYBusqueda.add(getBtMisReservas());
+		}
+		return pnBotonesYBusqueda;
+	}
+
+	private Component getHorizontalGlueBtCatalogo() {
+		if (horizontalGlueBtCatalogo == null) {
+			horizontalGlueBtCatalogo = Box.createHorizontalGlue();
+			horizontalGlueBtCatalogo.setMaximumSize(new Dimension(900, 0));
+		}
+		return horizontalGlueBtCatalogo;
+	}
+
+	private Component getHorizontalStrutBtCatalogo() {
+		if (horizontalStrutBtCatalogo == null) {
+			horizontalStrutBtCatalogo = Box.createHorizontalStrut(20);
+		}
+		return horizontalStrutBtCatalogo;
+	}
+
+	////////////////////// INTERNACIONALIZACION //////////////////////
+
 	public class CambiaIdioma implements ActionListener {
 
 		@Override
@@ -646,8 +873,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 
 	}
-	
-	
+
 	/**
 	 * Método principal para realizar la internacionalización de aplicación
 	 */
@@ -662,6 +888,7 @@ public class VentanaPrincipal extends JFrame {
 		localizarMenuInicio(textos);
 		localizarMenuJuego(textos);
 		localizarJuego(textos);
+		localizarCatalogo(textos);
 	}
 
 	/**
@@ -740,9 +967,20 @@ public class VentanaPrincipal extends JFrame {
 		getLbDadoDisponible().setDisplayedMnemonic(getLbDadoDisponible().getText().charAt(0));
 		panelJuego.localizarTablero();
 	}
-	
-	////////////////////// PASAR VENTANAS CON EL CARDLAYOUT ////////////////////// 
-	
+
+	private void localizarCatalogo(ResourceBundle textos) {
+		getBtAbrirFiltros().setText(textos.getString("btFiltros"));
+		getBtAbrirFiltros().setMnemonic(textos.getString("mnemonicBtFiltros").charAt(0));
+		getBtBuscar().setToolTipText(textos.getString("tooltipBarraBusqueda"));
+		getBtMisReservas().setText(textos.getString("btMisReservas"));
+		getBtMisReservas().setMnemonic(textos.getString("mnemonicBtReservas").charAt(0));
+		getLbPrecio().setText(textos.getString("precio"));
+		
+		inicializarCatalogo();
+	}
+
+	////////////////////// PASAR VENTANAS CON EL CARDLAYOUT //////////////////////
+
 	/**
 	 * Clase manejadora del evento de ciertos botones de movimiento entre pantallas
 	 * cuya función es coger el actionCommand del botón que informa de la ventana a
@@ -777,6 +1015,9 @@ public class VentanaPrincipal extends JFrame {
 		case "juego":
 			mostrarJuego();
 			break;
+		case "catalogoHoteles":
+			mostrarCatalogo();
+			break;
 		default:
 			throw new IllegalArgumentException("El valor " + pantalla + " no es un valor válido");
 		}
@@ -795,6 +1036,7 @@ public class VentanaPrincipal extends JFrame {
 	 * jugar o ir a reservar un hotel
 	 */
 	protected void mostrarMenuInicio() {
+		setImagenAdaptadaTitulo(getLbTitulo(), "/img/titulo.png", 674, 294);
 		getPnTituloEIdiomas().add(getPnIdiomas(), BorderLayout.EAST);
 		getPnMenuInicio().add(getPnTituloEIdiomas(), BorderLayout.NORTH);
 		getPnMenuInicio().add(getPnBtAtras(), BorderLayout.SOUTH);
@@ -826,7 +1068,26 @@ public class VentanaPrincipal extends JFrame {
 		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "juego");
 	}
 
-	////////////////////// OTROS MÉTODOS ////////////////////// 
+	/**
+	 * Muestra la ventan del catalogo de hoteles en el que el usuario podrá buscar
+	 * un hotel que le interese para informarse sobre él y reservarlo
+	 */
+	private void mostrarCatalogo() {
+		// Muestra el titulo
+		setImagenAdaptadaTitulo(getLbTitulo(), "/img/titulo.png", 190, 90);
+		getPnTituloCatalogoHoteles().add(getPnTituloEIdiomas(), BorderLayout.CENTER);
+
+		// Añade el boton para ir a la ventana anterior
+		getPnCatalogoHoteles().add(getPnBtAtras(), BorderLayout.SOUTH);
+		getBtAtras().setActionCommand("menuInicio");
+
+		inicializarCatalogo();
+
+		// Muestra la ventana
+		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "catalogoHoteles");
+	}
+
+	////////////////////// OTROS MÉTODOS //////////////////////
 
 	/**
 	 * Adapta el tamaño del titulo a la label
@@ -840,8 +1101,6 @@ public class VentanaPrincipal extends JFrame {
 		ImageIcon icon = new ImageIcon(imgEscalada);
 		label.setIcon(icon);
 	}
-
-	
 
 	/**
 	 * Adapta el tamaño de las imagenes en función del tamaño del componente que las
@@ -858,7 +1117,6 @@ public class VentanaPrincipal extends JFrame {
 		boton.setDisabledIcon(icon);
 	}
 
-	
 	/**
 	 * Inicializa el juego para comenzar una partida nueva desde 0
 	 */
@@ -926,6 +1184,20 @@ public class VentanaPrincipal extends JFrame {
 		return lb;
 	}
 
-
+	/**
+	 * Muestra u oculta el panel de filtros en función del estado del JToggleButton
+	 * btFiltros
+	 */
+	private void mostrarUOcultarFiltros() {
+		getPnFiltros().setVisible(!getPnFiltros().isVisible());
+	}
+	
+	private void inicializarCatalogo() {
+		// Oculta el panel de filtros
+		getBtAbrirFiltros().setSelected(false);
+		getPnFiltros().setVisible(false);
+		
+		//TODO Deseleccionar todos los filtros
+	}
 
 }
