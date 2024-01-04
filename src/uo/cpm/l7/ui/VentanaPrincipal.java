@@ -19,14 +19,18 @@ import java.util.ResourceBundle;
 import java.awt.Image;
 import java.awt.CardLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
+
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,6 +42,9 @@ import javax.swing.JComboBox;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
+import java.awt.GridBagLayout;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.border.LineBorder;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -119,6 +126,18 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel pnBotonesYBusqueda;
 	private Component horizontalGlueBtCatalogo;
 	private Component horizontalStrutBtCatalogo;
+	private JButton btAplicarFiltro;
+	private JPanel pnComboUbicaciones;
+	private JLabel lbUbicacion;
+	private JPanel pnLbPrecio;
+	private JLabel lbValorPrecio;
+	private Component horizontalGlue_1;
+	private Component horizontalGlue_2;
+	private JPanel pnAplicarYQuitarFiltro;
+	private JButton btQuitarFiltro;
+	private Component verticalStrut;
+	private JPanel pnEncantamientosConLb;
+	private JLabel lbEncantamientos;
 
 	/**
 	 * Create the frame.
@@ -720,6 +739,7 @@ public class VentanaPrincipal extends JFrame {
 	private JScrollPane getScpHoteles() {
 		if (scpHoteles == null) {
 			scpHoteles = new JScrollPane();
+			scpHoteles.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			scpHoteles.setBackground(Color.DARK_GRAY);
 			scpHoteles.setViewportView(getPnHoteles());
 		}
@@ -730,7 +750,7 @@ public class VentanaPrincipal extends JFrame {
 		if (pnHoteles == null) {
 			pnHoteles = new JPanel();
 			pnHoteles.setBackground(Color.DARK_GRAY);
-			pnHoteles.setLayout(new GridLayout(0, 2, 0, 0));
+			pnHoteles.setLayout(new GridLayout(0, 2, 30, 30));
 		}
 		return pnHoteles;
 	}
@@ -759,9 +779,15 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtBuscar() {
 		if (btBuscar == null) {
 			btBuscar = new JButton("");
-			btBuscar.setBackground(Color.DARK_GRAY);
+			btBuscar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					buscarHotelPorNombre();
+				}
+			});
+			btBuscar.setBackground(Color.WHITE);
 			btBuscar.setMinimumSize(new Dimension(50, 50));
 			btBuscar.setMaximumSize(new Dimension(50, 50));
+			setImagenAdaptada(btBuscar, "/img/lupa.png", 20, 20);
 		}
 		return btBuscar;
 	}
@@ -777,11 +803,15 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPnFiltros() {
 		if (pnFiltros == null) {
 			pnFiltros = new JPanel();
+			pnFiltros.setBorder(new LineBorder(Color.WHITE));
 			pnFiltros.setBackground(Color.DARK_GRAY);
 			pnFiltros.setLayout(new BoxLayout(pnFiltros, BoxLayout.X_AXIS));
-			pnFiltros.add(getCbUbicaciones());
+			pnFiltros.add(getPnComboUbicaciones());
+			pnFiltros.add(getHorizontalGlue_2());
 			pnFiltros.add(getPnSliderPrecio());
-			pnFiltros.add(getPnEncantamientos());
+			pnFiltros.add(getHorizontalGlue_1());
+			pnFiltros.add(getPnEncantamientosConLb());
+			pnFiltros.add(getPnAplicarYQuitarFiltro());
 		}
 		return pnFiltros;
 	}
@@ -789,6 +819,11 @@ public class VentanaPrincipal extends JFrame {
 	private JComboBox<String> getCbUbicaciones() {
 		if (cbUbicaciones == null) {
 			cbUbicaciones = new JComboBox<String>();
+			cbUbicaciones.setForeground(Color.WHITE);
+			cbUbicaciones.setFont(new Font("Arial", Font.PLAIN, 14));
+			cbUbicaciones.setAlignmentX(Component.LEFT_ALIGNMENT);
+			cbUbicaciones.setMinimumSize(new Dimension(400, 22));
+			cbUbicaciones.setMaximumSize(new Dimension(400, 32767));
 			cbUbicaciones.setBackground(Color.DARK_GRAY);
 		}
 		return cbUbicaciones;
@@ -797,6 +832,20 @@ public class VentanaPrincipal extends JFrame {
 	private JSlider getSlPrecio() {
 		if (slPrecio == null) {
 			slPrecio = new JSlider();
+			slPrecio.addChangeListener(new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					actualizarPrecio();
+				}
+			});
+			slPrecio.setBackground(Color.DARK_GRAY);
+			slPrecio.setFont(new Font("Arial", Font.PLAIN, 11));
+			slPrecio.setMajorTickSpacing(30);
+			slPrecio.setForeground(Color.WHITE);
+			slPrecio.setMinimum((int) app.getPrecioMasBajo());
+			slPrecio.setMaximum((int) app.getPrecioMasAlto());
+			slPrecio.setPaintTicks(true);
+			slPrecio.setPaintLabels(true);
+			slPrecio.setValue((slPrecio.getMaximum() - slPrecio.getMinimum() / 2));
 		}
 		return slPrecio;
 	}
@@ -804,8 +853,10 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPnEncantamientos() {
 		if (pnEncantamientos == null) {
 			pnEncantamientos = new JPanel();
+			pnEncantamientos.setMaximumSize(new Dimension(500, 32767));
 			pnEncantamientos.setBackground(Color.DARK_GRAY);
 			pnEncantamientos.setLayout(new GridLayout(2, 0, 0, 0));
+			generarFiltrosParaEncantamientos();
 		}
 		return pnEncantamientos;
 	}
@@ -813,9 +864,10 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPnSliderPrecio() {
 		if (pnSliderPrecio == null) {
 			pnSliderPrecio = new JPanel();
+			pnSliderPrecio.setMaximumSize(new Dimension(300, 32767));
 			pnSliderPrecio.setBackground(Color.DARK_GRAY);
 			pnSliderPrecio.setLayout(new BoxLayout(pnSliderPrecio, BoxLayout.Y_AXIS));
-			pnSliderPrecio.add(getLbPrecio());
+			pnSliderPrecio.add(getPnLbPrecio());
 			pnSliderPrecio.add(getSlPrecio());
 		}
 		return pnSliderPrecio;
@@ -824,9 +876,10 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel getLbPrecio() {
 		if (lbPrecio == null) {
 			lbPrecio = new JLabel("");
+			lbPrecio.setLabelFor(getSlPrecio());
 			lbPrecio.setAlignmentX(Component.CENTER_ALIGNMENT);
 			lbPrecio.setForeground(Color.WHITE);
-			lbPrecio.setFont(new Font("Arial", Font.PLAIN, 13));
+			lbPrecio.setFont(new Font("Arial", Font.PLAIN, 16));
 		}
 		return lbPrecio;
 	}
@@ -858,6 +911,129 @@ public class VentanaPrincipal extends JFrame {
 			horizontalStrutBtCatalogo = Box.createHorizontalStrut(20);
 		}
 		return horizontalStrutBtCatalogo;
+	}
+
+	private JButton getBtAplicarFiltro() {
+		if (btAplicarFiltro == null) {
+			btAplicarFiltro = new JButton("");
+			btAplicarFiltro.setMaximumSize(new Dimension(150, 40));
+			btAplicarFiltro.setAlignmentX(Component.CENTER_ALIGNMENT);
+			btAplicarFiltro.setFont(new Font("Arial", Font.PLAIN, 14));
+		}
+		return btAplicarFiltro;
+	}
+
+	private JPanel getPnComboUbicaciones() {
+		if (pnComboUbicaciones == null) {
+			pnComboUbicaciones = new JPanel();
+			pnComboUbicaciones.setBackground(Color.DARK_GRAY);
+			pnComboUbicaciones.setLayout(new BoxLayout(pnComboUbicaciones, BoxLayout.Y_AXIS));
+			pnComboUbicaciones.add(getLbUbicacion());
+			pnComboUbicaciones.add(getCbUbicaciones());
+		}
+		return pnComboUbicaciones;
+	}
+
+	private JLabel getLbUbicacion() {
+		if (lbUbicacion == null) {
+			lbUbicacion = new JLabel("");
+			lbUbicacion.setLabelFor(getCbUbicaciones());
+			lbUbicacion.setForeground(Color.WHITE);
+			lbUbicacion.setFont(new Font("Arial", Font.PLAIN, 15));
+		}
+		return lbUbicacion;
+	}
+
+	private JPanel getPnLbPrecio() {
+		if (pnLbPrecio == null) {
+			pnLbPrecio = new JPanel();
+			pnLbPrecio.setBackground(Color.DARK_GRAY);
+			pnLbPrecio.add(getLbPrecio());
+			pnLbPrecio.add(getLbValorPrecio());
+		}
+		return pnLbPrecio;
+	}
+
+	private JLabel getLbValorPrecio() {
+		if (lbValorPrecio == null) {
+			lbValorPrecio = new JLabel("");
+			lbValorPrecio.setForeground(Color.WHITE);
+			lbValorPrecio.setFont(new Font("Arial", Font.PLAIN, 16));
+		}
+		return lbValorPrecio;
+	}
+
+	private Component getHorizontalGlue_1() {
+		if (horizontalGlue_1 == null) {
+			horizontalGlue_1 = Box.createHorizontalGlue();
+			horizontalGlue_1.setMaximumSize(new Dimension(400, 0));
+		}
+		return horizontalGlue_1;
+	}
+
+	private Component getHorizontalGlue_2() {
+		if (horizontalGlue_2 == null) {
+			horizontalGlue_2 = Box.createHorizontalGlue();
+			horizontalGlue_2.setMaximumSize(new Dimension(500, 0));
+		}
+		return horizontalGlue_2;
+	}
+
+	private JPanel getPnAplicarYQuitarFiltro() {
+		if (pnAplicarYQuitarFiltro == null) {
+			pnAplicarYQuitarFiltro = new JPanel();
+			pnAplicarYQuitarFiltro.setBackground(Color.DARK_GRAY);
+			pnAplicarYQuitarFiltro.setMaximumSize(new Dimension(300, 32767));
+			pnAplicarYQuitarFiltro.setLayout(new BoxLayout(pnAplicarYQuitarFiltro, BoxLayout.Y_AXIS));
+			pnAplicarYQuitarFiltro.add(getVerticalStrut());
+			pnAplicarYQuitarFiltro.add(getBtAplicarFiltro());
+			pnAplicarYQuitarFiltro.add(getBtQuitarFiltro());
+		}
+		return pnAplicarYQuitarFiltro;
+	}
+
+	private JButton getBtQuitarFiltro() {
+		if (btQuitarFiltro == null) {
+			btQuitarFiltro = new JButton("");
+			btQuitarFiltro.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					inicializarCatalogo();
+				}
+			});
+			btQuitarFiltro.setMaximumSize(new Dimension(150, 40));
+			btQuitarFiltro.setAlignmentX(Component.CENTER_ALIGNMENT);
+			btQuitarFiltro.setFont(new Font("Arial", Font.PLAIN, 14));
+		}
+		return btQuitarFiltro;
+	}
+
+	private Component getVerticalStrut() {
+		if (verticalStrut == null) {
+			verticalStrut = Box.createVerticalStrut(20);
+		}
+		return verticalStrut;
+	}
+
+	private JPanel getPnEncantamientosConLb() {
+		if (pnEncantamientosConLb == null) {
+			pnEncantamientosConLb = new JPanel();
+			pnEncantamientosConLb.setBackground(Color.DARK_GRAY);
+			pnEncantamientosConLb.setLayout(new BoxLayout(pnEncantamientosConLb, BoxLayout.Y_AXIS));
+			pnEncantamientosConLb.add(getLbEncantamientos());
+			pnEncantamientosConLb.add(getPnEncantamientos());
+		}
+		return pnEncantamientosConLb;
+	}
+
+	private JLabel getLbEncantamientos() {
+		if (lbEncantamientos == null) {
+			lbEncantamientos = new JLabel("");
+			lbEncantamientos.setForeground(Color.WHITE);
+			lbEncantamientos.setFont(new Font("Arial", Font.PLAIN, 16));
+			lbEncantamientos.setBackground(Color.DARK_GRAY);
+			lbEncantamientos.setAlignmentX(Component.CENTER_ALIGNMENT);
+		}
+		return lbEncantamientos;
 	}
 
 	////////////////////// INTERNACIONALIZACION //////////////////////
@@ -969,14 +1145,33 @@ public class VentanaPrincipal extends JFrame {
 	}
 
 	private void localizarCatalogo(ResourceBundle textos) {
+		colocarTextoEnLabelsCatalogo(textos);
+
+		// Cambiar texto del combo de ubicaciones
+		if (ubicacion.getLanguage().equals("ES")) {
+			getCbUbicaciones().setModel(new DefaultComboBoxModel<>(app.getUbicacionesES()));
+		} else {
+			getCbUbicaciones().setModel(new DefaultComboBoxModel<>(app.getUbicacionesEN()));
+		}
+
+		inicializarCatalogo();
+	}
+
+	private void colocarTextoEnLabelsCatalogo(ResourceBundle textos) {
 		getBtAbrirFiltros().setText(textos.getString("btFiltros"));
 		getBtAbrirFiltros().setMnemonic(textos.getString("mnemonicBtFiltros").charAt(0));
 		getBtBuscar().setToolTipText(textos.getString("tooltipBarraBusqueda"));
 		getBtMisReservas().setText(textos.getString("btMisReservas"));
 		getBtMisReservas().setMnemonic(textos.getString("mnemonicBtReservas").charAt(0));
 		getLbPrecio().setText(textos.getString("precio"));
-		
-		inicializarCatalogo();
+		getLbPrecio().setDisplayedMnemonic(getLbPrecio().getText().charAt(0));
+		getBtAplicarFiltro().setText(textos.getString("btAplicarFiltro"));
+		getBtAplicarFiltro().setMnemonic(textos.getString("mnemonicAplicarFiltro").charAt(0));
+		getLbUbicacion().setText(textos.getString("ubicacion"));
+		getLbUbicacion().setDisplayedMnemonic(textos.getString("mnemonicUbicacion").charAt(0));
+		getBtQuitarFiltro().setText(textos.getString("btQuitarFiltro"));
+		getBtQuitarFiltro().setMnemonic(textos.getString("mnemonicBtQuitarFiltro").charAt(0));
+		getLbEncantamientos().setText(textos.getString("encantamientos"));
 	}
 
 	////////////////////// PASAR VENTANAS CON EL CARDLAYOUT //////////////////////
@@ -1074,7 +1269,7 @@ public class VentanaPrincipal extends JFrame {
 	 */
 	private void mostrarCatalogo() {
 		// Muestra el titulo
-		setImagenAdaptadaTitulo(getLbTitulo(), "/img/titulo.png", 190, 90);
+		setImagenAdaptadaTitulo(getLbTitulo(), "/img/titulo.png", 210, 96);
 		getPnTituloCatalogoHoteles().add(getPnTituloEIdiomas(), BorderLayout.CENTER);
 
 		// Añade el boton para ir a la ventana anterior
@@ -1191,13 +1386,106 @@ public class VentanaPrincipal extends JFrame {
 	private void mostrarUOcultarFiltros() {
 		getPnFiltros().setVisible(!getPnFiltros().isVisible());
 	}
-	
+
+	/**
+	 * Inicializa el catalogo para que se encuentre de la misma forma cada vez que
+	 * se abre su ventana
+	 */
 	private void inicializarCatalogo() {
+		// Crea los hoteles
+		getPnHoteles().removeAll();
+		crearPanelesHoteles();
+
 		// Oculta el panel de filtros
 		getBtAbrirFiltros().setSelected(false);
 		getPnFiltros().setVisible(false);
-		
-		//TODO Deseleccionar todos los filtros
+
+		// Deselecciona todos los filtros
+		for (int i = 0; i < getPnEncantamientos().getComponentCount(); i++)
+			((JCheckBox) getPnEncantamientos().getComponent(i)).setSelected(false);
+		// Vacía el buscador
+		getTxBarraBusqueda().setText("");
+
+		// Establecer el precio al inicial
+		getSlPrecio().setValue((slPrecio.getMaximum() - slPrecio.getMinimum() / 2));
+
+		// Establece el combo de ubicaciones a "Todos"
+		getCbUbicaciones().setSelectedIndex(0);
 	}
+
+	/**
+	 * Genera los checkboxes para los filtros de encantamientos
+	 */
+	private void generarFiltrosParaEncantamientos() {
+		for (int i = 0; i < app.getNumeroEncantamientosTotales(); i++)
+			getPnEncantamientos().add(generarFiltroEncantamiento(i));
+	}
+
+	private JCheckBox generarFiltroEncantamiento(int pos) {
+		JCheckBox encantamiento = new JCheckBox();
+		encantamiento.setText(app.getEncantamientoEnLista(pos).getDiminutivo());
+		encantamiento.setBackground(Color.DARK_GRAY);
+		encantamiento.setForeground(Color.WHITE);
+		return encantamiento;
+	}
+
+	/**
+	 * Actualiza la label que informa al usuario del precio que ha introducido como
+	 * filtro
+	 */
+	private void actualizarPrecio() {
+		getLbValorPrecio().setText(getSlPrecio().getValue() + "");
+	}
+
+	private void crearPanelesHoteles() {
+		// Si la ubicacion es española crea los hoteles en español
+		if (ubicacion.getLanguage().equals("es"))
+			for (int i = 0; i < app.getNumHoteles(); i++) {
+				PanelHotel pH = new PanelHotel(this.app, this, app.getHotelES(i));
+				getPnHoteles().add(pH);
+			}
+
+		// Si la ubicacion NO es española crea los hoteles en inglés
+		else
+			for (int i = 0; i < app.getNumHoteles(); i++) {
+				PanelHotel pH = new PanelHotel(this.app, this, app.getHotelEN(i));
+				getPnHoteles().add(pH);
+			}
+	}
+
+	private void buscarHotelPorNombre() {
+		getPnHoteles().removeAll();
+		crearPanelesHoteles();
+		String busqueda = getTxBarraBusqueda().getText();
+
+		if (busqueda.equals("")) {
+			validate();
+			return;
+		}
+			
+		else {
+			String resultado = app.buscarCastilloPorNombre(busqueda);
+			if (resultado == null)
+				getPnHoteles().removeAll();
+			else {
+				int numHoteles = getPnHoteles().getComponentCount();
+				for (int i = 0; i < numHoteles; i++) {
+					// Todo hotel que no coincida con la busqueda introducida en la barra de
+					// busqueda se borra
+					if (resultado.equals(((PanelHotel) getPnHoteles().getComponent(i)).getHotel().getCodigo())) {
+						PanelHotel hotelEncontrado= (PanelHotel) getPnHoteles().getComponent(i);
+						getPnHoteles().removeAll();
+						getPnHoteles().add(hotelEncontrado);
+						break;
+					}
+						
+				}
+			
+			}	
+		}
+		repaint();
+		validate();
+	}
+	
 
 }
