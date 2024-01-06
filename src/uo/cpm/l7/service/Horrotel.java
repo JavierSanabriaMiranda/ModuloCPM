@@ -1,5 +1,6 @@
 package uo.cpm.l7.service;
 
+import java.awt.font.GlyphJustificationInfo;
 import java.util.List;
 
 import uo.cpm.l7.model.Hotel.CatalogoHoteles;
@@ -269,4 +270,33 @@ public class Horrotel {
 		return catalogo.buscarCastilloPorNombre(nombre);
 	}
 	
+	/**
+	 * Recibe como parámetros de entrada el filtro que el usuario ha querido aplicar a su busqueda de castillos y retorna
+	 * una lista con todos los códigos de los castillos que se corresponden con el filtro aplicado
+	 * 
+	 * @param ubicacion de los castillos filtrados
+	 * @param precio de los castillos filtrados
+	 * @param encantamientos de los castillos filtrados (Deben tener mínimo estos encantamientos)
+	 * @return lista con todos los códigos de los castillos que se corresponden con el filtro aplicado
+	 */
+	public List<String> establecerFiltro(String ubicacion, double precio, List<String> encantamientos) {
+		if (encantamientos.isEmpty())
+			return catalogo.establecerFiltro(ubicacion, precio);
+		else
+			return catalogo.establecerFiltro(ubicacion, precio, encantamientos);
+	}
+	
+	/**
+	 * Devuelve el número mínimo de habitaciones que se deben seleccionar para el número de personas introducido como parámetro
+	 * 
+	 * @param personas que figuran en la reserva
+	 * @return número mínimo de habitaciones
+	 */
+	public int getNumeroMinimoDeHabitaciones(int personas) {
+		return (int) Math.ceil(personas/2.0);
+	}
+	
+	public double calcularPrecioReserva(int habitaciones, int dias, Hotel hotel) {
+		return hotel.getPrecioHabitacion() * habitaciones * dias;
+	}
 }

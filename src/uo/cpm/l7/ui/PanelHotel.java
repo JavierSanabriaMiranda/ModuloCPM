@@ -18,11 +18,14 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+
 import javax.swing.Box;
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PanelHotel extends JPanel {
-
 
 	private static final long serialVersionUID = 1L;
 	private Horrotel app;
@@ -39,11 +42,19 @@ public class PanelHotel extends JPanel {
 	private JLabel lbFotoHotel;
 	private Component horizontalGlue;
 
-	
 	/**
 	 * Create the panel.
 	 */
 	public PanelHotel(Horrotel app, VentanaPrincipal vp, Hotel hotel) {
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PanelInfoHotel pIH = new PanelInfoHotel(app, vp, hotel);
+				vp.getPnInfoHotel().removeAll();
+				vp.getPnInfoHotel().add(pIH);
+				vp.mostrarInfoHotel();
+			}
+		});
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -58,11 +69,13 @@ public class PanelHotel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 		add(getPnFotoYEncantamientos(), BorderLayout.CENTER);
 		add(getPnNombreYPrecio(), BorderLayout.SOUTH);
-		setPreferredSize(new Dimension(100,300));
+		setPreferredSize(new Dimension(100, 300));
+		
+		crearLabelsEncantamientos();
 
 		localizar();
 	}
-	
+
 	protected Hotel getHotel() {
 		return this.hotel;
 	}
@@ -77,6 +90,7 @@ public class PanelHotel extends JPanel {
 		}
 		return pnFotoYEncantamientos;
 	}
+
 	private JPanel getPnNombreYPrecio() {
 		if (pnNombreYPrecio == null) {
 			pnNombreYPrecio = new JPanel();
@@ -88,6 +102,7 @@ public class PanelHotel extends JPanel {
 		}
 		return pnNombreYPrecio;
 	}
+
 	private JPanel getPnEncantamientos() {
 		if (pnEncantamientos == null) {
 			pnEncantamientos = new JPanel();
@@ -96,6 +111,7 @@ public class PanelHotel extends JPanel {
 		}
 		return pnEncantamientos;
 	}
+
 	private JPanel getPnFoto() {
 		if (pnFoto == null) {
 			pnFoto = new JPanel();
@@ -105,6 +121,7 @@ public class PanelHotel extends JPanel {
 		}
 		return pnFoto;
 	}
+
 	private JPanel getPnPrecio() {
 		if (pnPrecio == null) {
 			pnPrecio = new JPanel();
@@ -116,6 +133,7 @@ public class PanelHotel extends JPanel {
 		}
 		return pnPrecio;
 	}
+
 	private JLabel getLbValorPrecio() {
 		if (lbValorPrecio == null) {
 			lbValorPrecio = new JLabel("");
@@ -124,6 +142,7 @@ public class PanelHotel extends JPanel {
 		}
 		return lbValorPrecio;
 	}
+
 	private JLabel getLbPrecio() {
 		if (lbPrecio == null) {
 			lbPrecio = new JLabel("");
@@ -132,41 +151,41 @@ public class PanelHotel extends JPanel {
 		}
 		return lbPrecio;
 	}
-	
+
 	protected void localizar() {
 		ResourceBundle textos = ResourceBundle.getBundle("rcs/textos", vp.getUbicacion());
-		
+
 		getLbPrecio().setText(textos.getString("precioNoche"));
-		getLbValorPrecio().setText(hotel.getPrecioHabitacion() + "");
-		
-		
+		getLbValorPrecio().setText(String.format("%.2f", hotel.getPrecioHabitacion()));
+
 		getLbNombreHotel().setText(hotel.getDenominacion());
-		
-			
-	
+		getPnFoto().setToolTipText(textos.getString("tooltipPulsarHotel"));
+
 	}
+
 	private JLabel getLbNombreHotel() {
 		if (lbNombreHotel == null) {
 			lbNombreHotel = new JLabel("");
-			lbNombreHotel.setMaximumSize(new Dimension(200, 2147483647));
+			lbNombreHotel.setMaximumSize(new Dimension(400, 2147483647));
 			lbNombreHotel.setAlignmentX(Component.CENTER_ALIGNMENT);
 			lbNombreHotel.setForeground(Color.WHITE);
 			lbNombreHotel.setFont(new Font("Arial", Font.PLAIN, 20));
 		}
 		return lbNombreHotel;
 	}
-	
+
 	private JLabel getLbFotoHotel() {
 		if (lbFotoHotel == null) {
 			lbFotoHotel = new JLabel("");
 		}
 		return lbFotoHotel;
 	}
-	
+
 	/**
 	 * Adapta el tamaño de la imagen del hotel al tamaño del panel que lo contiene
 	 * 
-	 * @param label en la que se ubicará foto del hotel que se quiere redimensionar
+	 * @param label      en la que se ubicará foto del hotel que se quiere
+	 *                   redimensionar
 	 * @param rutaImagen nombre de la imagen
 	 */
 	private void setImagenAdaptada(JLabel label, String rutaImagen) {
@@ -175,7 +194,7 @@ public class PanelHotel extends JPanel {
 		ImageIcon icon = new ImageIcon(imgEscalada);
 		label.setIcon(icon);
 	}
-	
+
 	private Component getHorizontalGlue() {
 		if (horizontalGlue == null) {
 			horizontalGlue = Box.createHorizontalGlue();
@@ -184,5 +203,31 @@ public class PanelHotel extends JPanel {
 		return horizontalGlue;
 	}
 	
+	private void crearLabelsEncantamientos() {
+		ResourceBundle textos = ResourceBundle.getBundle("rcs/textos", vp.getUbicacion());
+		
+		for (int i = 0; i < getHotel().getNumeroEncantamientos(); i++) {
+			// Creamos el panel que contiene al componente
+			JPanel pn = new JPanel();
+			pn.setSize(new Dimension(40,40));
+			pn.setBackground(Color.DARK_GRAY);
+			pn.setBorder(new LineBorder(Color.WHITE));
+			pn.setLayout(new FlowLayout());
+			
+			// Creamos el label que informa del encantamiento
+			JLabel lb = new JLabel(hotel.getEncantamiento(i).getDiminutivo());
+			lb.setBackground(Color.BLUE);
+			lb.setForeground(Color.WHITE);
+			lb.setFont(new Font("Arial", Font.PLAIN, 15));
+			// Establece un tooltip que aclara el tipo de encantamiento al que hace referencia el diminutivo
+			pn.setToolTipText(textos.getString(hotel.getEncantamiento(i).getDiminutivo()));
+			
+			// Añadimos el label al panel
+			pn.add(lb);
+			
+			// Añadimos el panel al otro panel
+			getPnEncantamientos().add(pn);
+		}
+	}
 
 }
