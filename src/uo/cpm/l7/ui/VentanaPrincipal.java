@@ -7,6 +7,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import java.awt.event.MouseEvent;
+
 import uo.cpm.l7.service.Horrotel;
 
 import java.awt.Toolkit;
@@ -14,6 +16,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.awt.Image;
@@ -24,7 +29,6 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
@@ -42,9 +46,9 @@ import javax.swing.JComboBox;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
-import java.awt.GridBagLayout;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.JTextArea;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -61,6 +65,7 @@ public class VentanaPrincipal extends JFrame {
 	private JTextPane txPanePresentacion;
 	private PasarPantalla pasaPantalla = new PasarPantalla();
 	private CambiaIdioma cI = new CambiaIdioma();
+	private MuestraInfoDiminutivos mID = new MuestraInfoDiminutivos();
 	private JPanel pnCentralInicio;
 	private JPanel pnTituloEIdiomas;
 	private JPanel pnCentralMenuInicio;
@@ -138,6 +143,10 @@ public class VentanaPrincipal extends JFrame {
 	private Component verticalStrut;
 	private JPanel pnEncantamientosConLb;
 	private JLabel lbEncantamientos;
+	private JPanel pnLbEncantamientos;
+	private JLabel lbInfoDiminutivos;
+	private JTextArea txInfoDiminutivos;
+	private JPanel pnInfoHotel;
 
 	/**
 	 * Create the frame.
@@ -175,6 +184,7 @@ public class VentanaPrincipal extends JFrame {
 			panelVentanas.add(getPnMenuInicio(), "menuInicio");
 			panelVentanas.add(getPnMenuJuego(), "menuJuego");
 			panelVentanas.add(getPnCatalogoHoteles(), "catalogoHoteles");
+			panelVentanas.add(getPnInfoHotel(), "infoHotel");
 		}
 		return panelVentanas;
 	}
@@ -727,7 +737,7 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel getPnBarraBusqueda() {
 		if (pnBarraBusqueda == null) {
 			pnBarraBusqueda = new JPanel();
-			pnBarraBusqueda.setMaximumSize(new Dimension(700, 200));
+			pnBarraBusqueda.setMaximumSize(new Dimension(600, 200));
 			pnBarraBusqueda.setBackground(Color.DARK_GRAY);
 			pnBarraBusqueda.setLayout(new BorderLayout(0, 0));
 			pnBarraBusqueda.add(getTxBarraBusqueda(), BorderLayout.CENTER);
@@ -811,6 +821,7 @@ public class VentanaPrincipal extends JFrame {
 			pnFiltros.add(getPnSliderPrecio());
 			pnFiltros.add(getHorizontalGlue_1());
 			pnFiltros.add(getPnEncantamientosConLb());
+			pnFiltros.add(getTxInfoDiminutivos());
 			pnFiltros.add(getPnAplicarYQuitarFiltro());
 		}
 		return pnFiltros;
@@ -845,7 +856,7 @@ public class VentanaPrincipal extends JFrame {
 			slPrecio.setMaximum((int) app.getPrecioMasAlto());
 			slPrecio.setPaintTicks(true);
 			slPrecio.setPaintLabels(true);
-			slPrecio.setValue((slPrecio.getMaximum() - slPrecio.getMinimum() / 2));
+			slPrecio.setValue((int) app.getPrecioMasAlto());
 		}
 		return slPrecio;
 	}
@@ -916,6 +927,11 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtAplicarFiltro() {
 		if (btAplicarFiltro == null) {
 			btAplicarFiltro = new JButton("");
+			btAplicarFiltro.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					aplicarFiltro();
+				}
+			});
 			btAplicarFiltro.setMaximumSize(new Dimension(150, 40));
 			btAplicarFiltro.setAlignmentX(Component.CENTER_ALIGNMENT);
 			btAplicarFiltro.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -1019,7 +1035,7 @@ public class VentanaPrincipal extends JFrame {
 			pnEncantamientosConLb = new JPanel();
 			pnEncantamientosConLb.setBackground(Color.DARK_GRAY);
 			pnEncantamientosConLb.setLayout(new BoxLayout(pnEncantamientosConLb, BoxLayout.Y_AXIS));
-			pnEncantamientosConLb.add(getLbEncantamientos());
+			pnEncantamientosConLb.add(getPnLbEncantamientos());
 			pnEncantamientosConLb.add(getPnEncantamientos());
 		}
 		return pnEncantamientosConLb;
@@ -1034,6 +1050,39 @@ public class VentanaPrincipal extends JFrame {
 			lbEncantamientos.setAlignmentX(Component.CENTER_ALIGNMENT);
 		}
 		return lbEncantamientos;
+	}
+	
+	private JLabel getLbInfoDiminutivos() {
+		if (lbInfoDiminutivos == null) {
+			lbInfoDiminutivos = new JLabel("");
+			setImagenAdaptadaTitulo(lbInfoDiminutivos, "/img/info.png", 30, 30);
+			lbInfoDiminutivos.addMouseListener(mID);
+		}
+		return lbInfoDiminutivos;
+	}
+	
+	private JPanel getPnLbEncantamientos() {
+		if (pnLbEncantamientos == null) {
+			pnLbEncantamientos = new JPanel();
+			pnLbEncantamientos.setBackground(Color.DARK_GRAY);
+			pnLbEncantamientos.setMaximumSize(new Dimension(500, 100));
+			pnLbEncantamientos.add(getLbEncantamientos());
+			pnLbEncantamientos.add(getLbInfoDiminutivos());
+		}
+		return pnLbEncantamientos;
+	}
+	
+	private JTextArea getTxInfoDiminutivos() {
+		if (txInfoDiminutivos == null) {
+			txInfoDiminutivos = new JTextArea();
+			txInfoDiminutivos.setMaximumSize(new Dimension(300, 2147483647));
+			txInfoDiminutivos.setForeground(Color.WHITE);
+			txInfoDiminutivos.setFont(new Font("Arial", Font.PLAIN, 14));
+			txInfoDiminutivos.setBackground(Color.DARK_GRAY);
+			txInfoDiminutivos.setEditable(false);
+			txInfoDiminutivos.setVisible(false);
+		}
+		return txInfoDiminutivos;
 	}
 
 	////////////////////// INTERNACIONALIZACION //////////////////////
@@ -1148,11 +1197,17 @@ public class VentanaPrincipal extends JFrame {
 		colocarTextoEnLabelsCatalogo(textos);
 
 		// Cambiar texto del combo de ubicaciones
-		if (ubicacion.getLanguage().equals("ES")) {
+		if (ubicacion.getLanguage().equals("es")) {
 			getCbUbicaciones().setModel(new DefaultComboBoxModel<>(app.getUbicacionesES()));
 		} else {
 			getCbUbicaciones().setModel(new DefaultComboBoxModel<>(app.getUbicacionesEN()));
 		}
+		
+		// Se establece el texto del panel de información de diminutivos
+		getTxInfoDiminutivos().setText(textos.getString("infoDiminutivos"));
+		
+		// Se establece el tooltip para el icono de información de diminutivos
+		getLbInfoDiminutivos().setToolTipText(textos.getString("tooltipInfoDiminutivos"));
 
 		inicializarCatalogo();
 	}
@@ -1264,7 +1319,7 @@ public class VentanaPrincipal extends JFrame {
 	}
 
 	/**
-	 * Muestra la ventan del catalogo de hoteles en el que el usuario podrá buscar
+	 * Muestra la ventana del catalogo de hoteles en el que el usuario podrá buscar
 	 * un hotel que le interese para informarse sobre él y reservarlo
 	 */
 	private void mostrarCatalogo() {
@@ -1280,6 +1335,17 @@ public class VentanaPrincipal extends JFrame {
 
 		// Muestra la ventana
 		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "catalogoHoteles");
+	}
+	
+	/**
+	 * Muestra una ventana con la info de un hotel concreto en el que ha hecho click el usuario
+	 */
+	protected void mostrarInfoHotel() {
+		getPnInfoHotel().add(getPnBtAtras(), BorderLayout.SOUTH);
+		getBtAtras().setActionCommand("catalogoHoteles");
+		
+		// Muestra la ventana
+		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "infoHotel");
 	}
 
 	////////////////////// OTROS MÉTODOS //////////////////////
@@ -1407,7 +1473,7 @@ public class VentanaPrincipal extends JFrame {
 		getTxBarraBusqueda().setText("");
 
 		// Establecer el precio al inicial
-		getSlPrecio().setValue((slPrecio.getMaximum() - slPrecio.getMinimum() / 2));
+		getSlPrecio().setValue(slPrecio.getMaximum());
 
 		// Establece el combo de ubicaciones a "Todos"
 		getCbUbicaciones().setSelectedIndex(0);
@@ -1462,7 +1528,7 @@ public class VentanaPrincipal extends JFrame {
 			validate();
 			return;
 		}
-			
+
 		else {
 			String resultado = app.buscarCastilloPorNombre(busqueda);
 			if (resultado == null)
@@ -1470,22 +1536,93 @@ public class VentanaPrincipal extends JFrame {
 			else {
 				int numHoteles = getPnHoteles().getComponentCount();
 				for (int i = 0; i < numHoteles; i++) {
-					// Todo hotel que no coincida con la busqueda introducida en la barra de
-					// busqueda se borra
+					// Los hoteles que no coincidan con la busqueda introducida en la barra de
+					// busqueda se borran
 					if (resultado.equals(((PanelHotel) getPnHoteles().getComponent(i)).getHotel().getCodigo())) {
-						PanelHotel hotelEncontrado= (PanelHotel) getPnHoteles().getComponent(i);
+						PanelHotel hotelEncontrado = (PanelHotel) getPnHoteles().getComponent(i);
 						getPnHoteles().removeAll();
 						getPnHoteles().add(hotelEncontrado);
 						break;
 					}
-						
+
 				}
-			
-			}	
+
+			}
 		}
 		repaint();
 		validate();
 	}
-	
 
+	private void aplicarFiltro() {
+		getPnHoteles().removeAll();
+		crearPanelesHoteles();
+
+		String ubicacion = (String) getCbUbicaciones().getSelectedItem();
+		double precio = getSlPrecio().getValue();
+		List<String> encantamientos = getEncantamientosSeleccionados();
+
+		List<String> codigosCastillos = app.establecerFiltro(ubicacion, precio, encantamientos);
+		List<PanelHotel> castillosPermitidos = new ArrayList<>();
+
+		// Si no hay castillos con los criterios introducidos
+		if (codigosCastillos.isEmpty()) {
+			getPnHoteles().removeAll();
+			repaint();
+		}
+		
+		// Si hay mínimo un castillo que cumple los filtros
+		else {
+			for (int i = 0; i < getPnHoteles().getComponentCount(); i++) {
+				PanelHotel hotel = (PanelHotel) getPnHoteles().getComponent(i);
+				// Si el código del castillo está en la lista de códigos es porque cumple los
+				// filtros
+				if (codigosCastillos.contains(hotel.getHotel().getCodigo()))
+					castillosPermitidos.add(hotel);
+			}
+			getPnHoteles().removeAll();
+			for (PanelHotel hotel : castillosPermitidos)
+				getPnHoteles().add(hotel);
+		}
+		validate();
+	}
+
+	/**
+	 * @return lista que almacena los textos que representan cada uno de los
+	 *         encantamientos seleccionados en el panel de filtro
+	 */
+	private List<String> getEncantamientosSeleccionados() {
+		List<String> encantamientosSeleccionados = new ArrayList<>();
+		for (int i = 0; i < getPnEncantamientos().getComponentCount(); i++) {
+			JCheckBox encantamiento = (JCheckBox) getPnEncantamientos().getComponent(i);
+			if (encantamiento.isSelected())
+				encantamientosSeleccionados.add(encantamiento.getText());
+		}
+
+		return encantamientosSeleccionados;
+	}
+
+	
+	private class MuestraInfoDiminutivos extends MouseAdapter {
+		
+		@Override
+		public void mousePressed(MouseEvent e) {
+			getTxInfoDiminutivos().setVisible(true);
+		}
+		
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			getTxInfoDiminutivos().setVisible(false);
+		}
+
+	}
+
+
+	protected JPanel getPnInfoHotel() {
+		if (pnInfoHotel == null) {
+			pnInfoHotel = new JPanel();
+			pnInfoHotel.setBackground(Color.DARK_GRAY);
+			pnInfoHotel.setLayout(new BorderLayout(0, 0));
+		}
+		return pnInfoHotel;
+	}
 }

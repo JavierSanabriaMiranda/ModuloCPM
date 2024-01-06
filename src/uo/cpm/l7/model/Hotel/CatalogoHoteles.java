@@ -6,15 +6,16 @@ import java.util.List;
 import uo.cpm.l7.util.FileUtil;
 
 public class CatalogoHoteles {
-	
+
 	private static final String FICHERO_HOTELES_ES = "files/castillos.dat";
 	private static final String FICHERO_HOTELES_EN = "files/castles.dat";
-	
+
 	private List<Hotel> hotelesES;
 	private List<Hotel> hotelesEN;
 
 	/**
-	 * Constructor por defecto de la clase CatalogoHoteles. Rellena el catálogo con los datos del fichero catillos.dat
+	 * Constructor por defecto de la clase CatalogoHoteles. Rellena el catálogo con
+	 * los datos del fichero catillos.dat
 	 */
 	public CatalogoHoteles() {
 		hotelesES = new ArrayList<>();
@@ -22,14 +23,14 @@ public class CatalogoHoteles {
 		rellenarCatalogoES();
 		rellenarCatalogoEN();
 	}
-	
+
 	/**
 	 * Rellena el catálogo español con los datos del fichero catillos.dat
 	 */
 	private void rellenarCatalogoES() {
 		FileUtil.loadFile(FICHERO_HOTELES_ES, hotelesES);
 	}
-	
+
 	/**
 	 * Rellena el catálogo inglés con los datos del fichero castles.dat
 	 */
@@ -43,22 +44,23 @@ public class CatalogoHoteles {
 	public List<Hotel> getHotelesES() {
 		return hotelesES;
 	}
-	
+
 	/**
 	 * @return lista de hoteles en inglés
 	 */
 	public List<Hotel> getHotelesEN() {
 		return hotelesEN;
 	}
-	
+
 	/**
-	 * @return número de hoteles totales que tiene el catálogo. Se usa el catálogo en español aunque el inglés también sirve
-	 * ya que tienen el mismo número de hoteles
+	 * @return número de hoteles totales que tiene el catálogo. Se usa el catálogo
+	 *         en español aunque el inglés también sirve ya que tienen el mismo
+	 *         número de hoteles
 	 */
 	public int getNumHoteles() {
 		return hotelesES.size();
 	}
-	
+
 	/**
 	 * @return precio más bajo de entre todos los hoteles
 	 */
@@ -70,7 +72,7 @@ public class CatalogoHoteles {
 		}
 		return precioMin;
 	}
-	
+
 	/**
 	 * @return precio más alto de entre todos los hoteles
 	 */
@@ -82,7 +84,7 @@ public class CatalogoHoteles {
 		}
 		return precioMax;
 	}
-	
+
 	/**
 	 * @return número de paises distintos en los que hay hoteles
 	 */
@@ -95,9 +97,10 @@ public class CatalogoHoteles {
 		}
 		return ubicaciones.size();
 	}
-	
+
 	/**
-	 * @return array de Strings con los nombres de todas las ubicaciones en Español en las que hay castillos
+	 * @return array de Strings con los nombres de todas las ubicaciones en Español
+	 *         en las que hay castillos
 	 */
 	public String[] getUbicacionesES() {
 		List<String> ubicaciones = new ArrayList<>();
@@ -112,9 +115,10 @@ public class CatalogoHoteles {
 			ubicacionesArray[i] = ubicaciones.get(i);
 		return ubicacionesArray;
 	}
-	
+
 	/**
-	 * @return array de Strings con los nombres de todas las ubicaciones en Inglés las que hay castillos
+	 * @return array de Strings con los nombres de todas las ubicaciones en Inglés
+	 *         las que hay castillos
 	 */
 	public String[] getUbicacionesEN() {
 		List<String> ubicaciones = new ArrayList<>();
@@ -129,16 +133,18 @@ public class CatalogoHoteles {
 			ubicacionesArray[i] = ubicaciones.get(i);
 		return ubicacionesArray;
 	}
-	
+
 	/**
-	 * Devuelve el código del castillo que coinciden con la busqueda introducida como parámetro
+	 * Devuelve el código del castillo que coinciden con la busqueda introducida
+	 * como parámetro
 	 * 
 	 * @param nombre del castillo a encontrar
-	 * @return código del castillo que coinciden con la busqueda introducida como parámetro
+	 * @return código del castillo que coinciden con la busqueda introducida como
+	 *         parámetro
 	 */
 	public String buscarCastilloPorNombre(String nombre) {
-		
-		for (Hotel hotel : hotelesES) 
+
+		for (Hotel hotel : hotelesES)
 			if (hotel.getDenominacion().toLowerCase().equals(nombre.toLowerCase()))
 				return hotel.getCodigo();
 		for (Hotel hotel : hotelesEN)
@@ -146,5 +152,109 @@ public class CatalogoHoteles {
 				return hotel.getCodigo();
 		return null;
 	}
-	
+
+	/**
+	 * Recibe como parámetros de entrada el filtro que el usuario ha querido aplicar
+	 * a su busqueda de castillos y retorna una lista con todos los códigos de los
+	 * castillos que se corresponden con el filtro aplicado
+	 * 
+	 * @param ubicacion      de los castillos filtrados
+	 * @param precio         de los castillos filtrados
+	 * @param encantamientos de los castillos filtrados (Deben tener mínimo estos
+	 *                       encantamientos)
+	 * @return lista con todos los códigos de los castillos que se corresponden con
+	 *         el filtro aplicado
+	 */
+	public List<String> establecerFiltro(String ubicacion, double precio) {
+		List<String> hotelesPermitidos = new ArrayList<>();
+
+		for (Hotel hotel : hotelesES)
+			// Si la ubicación es Todas solo se observa el precio
+			if (ubicacion == "Todas") {
+				if (hotel.getPrecioHabitacion() <= precio)
+					hotelesPermitidos.add(hotel.getCodigo());
+			} else {
+				if (hotel.getPais().equals(ubicacion) && hotel.getPrecioHabitacion() <= precio)
+					hotelesPermitidos.add(hotel.getCodigo());
+			}
+
+		for (Hotel hotel : hotelesEN)
+			// Si la ubicación es Todas solo se observa el precio
+			if (ubicacion == "All") {
+				if (hotel.getPrecioHabitacion() <= precio)
+					hotelesPermitidos.add(hotel.getCodigo());
+			} else {
+				if (hotel.getPais().equals(ubicacion) && hotel.getPrecioHabitacion() <= precio)
+					hotelesPermitidos.add(hotel.getCodigo());
+			}
+
+		return hotelesPermitidos;
+	}
+
+	/**
+	 * Recibe como parámetros de entrada el filtro que el usuario ha querido aplicar
+	 * a su busqueda de castillos y retorna una lista con todos los códigos de los
+	 * castillos que se corresponden con el filtro aplicado
+	 * 
+	 * @param ubicacion      de los castillos filtrados
+	 * @param precio         de los castillos filtrados
+	 * @param encantamientos de los castillos filtrados (Deben tener mínimo estos
+	 *                       encantamientos)
+	 * @return lista con todos los códigos de los castillos que se corresponden con
+	 *         el filtro aplicado
+	 */
+	public List<String> establecerFiltro(String ubicacion, double precio, List<String> encantamientos) {
+		List<String> hotelesPermitidos = new ArrayList<>();
+
+		for (Hotel hotel : hotelesES)
+			if (ubicacion == "Todas") {
+				if (hotel.getPrecioHabitacion() <= precio && contieneEncantamientos(encantamientos, hotel))
+					hotelesPermitidos.add(hotel.getCodigo());
+			} else {
+				if (hotel.getPais().equals(ubicacion) && hotel.getPrecioHabitacion() <= precio
+						&& contieneEncantamientos(encantamientos, hotel))
+					hotelesPermitidos.add(hotel.getCodigo());
+			}
+
+		for (Hotel hotel : hotelesEN)
+			if (ubicacion == "All") {
+				if (hotel.getPrecioHabitacion() <= precio && contieneEncantamientos(encantamientos, hotel))
+					hotelesPermitidos.add(hotel.getCodigo());
+			} else {
+				if (hotel.getPais().equals(ubicacion) && hotel.getPrecioHabitacion() <= precio
+						&& contieneEncantamientos(encantamientos, hotel))
+					hotelesPermitidos.add(hotel.getCodigo());
+			}
+
+		return hotelesPermitidos;
+	}
+
+	/**
+	 * @param encantamientos a comprobar si los contiene el hotel
+	 * @param hotel          a comprobar si contiene los encantamientos
+	 * @return true si el hotel contiene todos los encantamientos introducidos como
+	 *         parámetro, false en caso contrario
+	 */
+	private boolean contieneEncantamientos(List<String> encantamientos, Hotel hotel) {
+		List<String> diminutivos = getDiminutivosEncantamientos(hotel.getEncantamientos());
+
+		for (String encantamiento : encantamientos)
+			// Si el hotel no contiene alguno de los encantamientos
+			if (!diminutivos.contains(encantamiento))
+				return false;
+		// Si el hotel contiene todos los encantamientos
+		return true;
+	}
+
+	/**
+	 * @return lista con los diminutivos de los encantamientos introducidos como
+	 *         parámetro
+	 */
+	private List<String> getDiminutivosEncantamientos(List<Encantamiento> encantamientos) {
+		List<String> diminutivos = new ArrayList<>();
+		for (Encantamiento encantamiento : encantamientos)
+			diminutivos.add(encantamiento.getDiminutivo());
+		return diminutivos;
+	}
+
 }
