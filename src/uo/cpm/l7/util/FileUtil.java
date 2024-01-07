@@ -11,16 +11,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
-
 import uo.cpm.l7.model.Hotel.Encantamiento;
 import uo.cpm.l7.model.Hotel.Hotel;
+import uo.cpm.l7.model.Hotel.Reserva;
 
 public abstract class FileUtil {
 	
 	private static final String ARCHIVO_DESCUENTOS = "files/descuentos.dat";
+	private static final String ARCHIVOS_RESERVAS = "files/reservas.dat";
 
 	public static void loadFile(String nombreFicheroEntrada, List<Hotel> catalogoHoteles) {
 
@@ -147,11 +146,74 @@ public abstract class FileUtil {
 					lineasSinDni.add(linea);
 			}
 			
-			// Guarda todas las líneas menos la filtrada en el mismo archivo
+			// Guarda todas las líneas menos la filtrada en el mismo archivo original
 			File fichero = new File(ARCHIVO_DESCUENTOS);
 			BufferedWriter writer = new BufferedWriter(new FileWriter(fichero));
 			
 			for (String linea : lineasSinDni) {
+				writer.write(linea + "\n");
+			}
+			writer.close();
+			
+			
+		} catch (IOException e) {
+			throw new RuntimeException("Error de Entrada/Salida", e);
+		}
+	}
+	
+	/**
+	 * Devuelve una lista con todas las reservas asociadas al DNI introducido como parámetro
+	 * 
+	 * @param DNI asociado a las reservas a buscar
+	 * @return lista de Strings que son las reservas asociadas al DNI introducido como parámetro
+	 */
+	public static List<Reserva> getReservas(String DNI) {
+		String linea;
+		String[] partes;
+		List<Reserva> reservas = new ArrayList<>();
+		
+		try {
+			BufferedReader fichero = new BufferedReader(new FileReader(ARCHIVOS_RESERVAS));
+			while (fichero.ready()) {
+				linea = fichero.readLine();
+				partes = linea.split(";");
+				if (partes[0].toLowerCase().equals(DNI.toLowerCase())) {
+					reservas.add(new Reserva(partes[0],partes[1],partes[2],partes[3],partes[4],Integer.parseInt(partes[5]),
+							Integer.parseInt(partes[6]),Double.parseDouble(partes[7]), "")); // Omitimos los comentarios porque no los mostramos
+				}
+			}
+			fichero.close();
+			return reservas;
+		} catch (FileNotFoundException fnfe) {
+			System.out.println("El archivo no se ha encontrado.");
+		} catch (IOException ioe) {
+			new RuntimeException("Error de entrada/salida.");
+		}
+		throw new IllegalArgumentException("El DNI introducido no se encuentra en el fichero");
+	}
+	
+	/**
+	 * Borra del archivo "reservas.dat" la reserva cuya linea esta formateada como lineaReserva
+	 * @param lineaReserva linea a borrar formateada
+	 */
+	public static void borrarReserva(String lineaReserva) {
+		Path filePath = Paths.get(ARCHIVOS_RESERVAS);
+		try {
+			// Pasa todas las líneas del fichero cuyo path es filePath a una lista
+			List<String> lineas = Files.readAllLines(filePath);
+			// Filtra la línea que tiene el formato pasado como parámetro
+			List<String> lineasNoCoincidentes = new ArrayList<>();
+			for (String linea : lineas) {
+				// Si la linea que se recorre no es la que se busca eliminar, se escribe en la nueva lista
+				if (!(linea + "\n").equals(lineaReserva)) // Le añadimos el \n que el readAllLines le quita
+					lineasNoCoincidentes.add(linea);
+			}
+			
+			// Guarda todas las líneas menos la filtrada en el mismo archivo original
+			File fichero = new File(ARCHIVOS_RESERVAS);
+			BufferedWriter writer = new BufferedWriter(new FileWriter(fichero));
+			
+			for (String linea : lineasNoCoincidentes) {
 				writer.write(linea + "\n");
 			}
 			writer.close();
