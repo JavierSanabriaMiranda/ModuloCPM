@@ -178,8 +178,14 @@ public abstract class FileUtil {
 				linea = fichero.readLine();
 				partes = linea.split(";");
 				if (partes[0].toLowerCase().equals(DNI.toLowerCase())) {
-					reservas.add(new Reserva(partes[0],partes[1],partes[2],partes[3],partes[4],Integer.parseInt(partes[5]),
-							Integer.parseInt(partes[6]),Double.parseDouble(partes[7]), "")); // Omitimos los comentarios porque no los mostramos
+					// Si la reserva no tiene comentarios
+					if (partes.length == 8)
+						reservas.add(new Reserva(partes[0],partes[1],partes[2],partes[3],partes[4],Integer.parseInt(partes[5]),
+							Integer.parseInt(partes[6]),Double.parseDouble(partes[7]),""));
+					// Si la reserva tiene comentarios
+					else
+						reservas.add(new Reserva(partes[0],partes[1],partes[2],partes[3],partes[4],Integer.parseInt(partes[5]),
+								Integer.parseInt(partes[6]),Double.parseDouble(partes[7]),partes[8]));
 				}
 			}
 			fichero.close();
