@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.Toolkit;
 
 public class VentanaFinalJuego extends JDialog {
 
@@ -53,10 +54,11 @@ public class VentanaFinalJuego extends JDialog {
 	 * Create the frame.
 	 */
 	public VentanaFinalJuego(Horrotel app, VentanaPrincipal vp, Locale ubicacion) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaFinalJuego.class.getResource("/img/logo.png")));
 		this.ubicacion = ubicacion;
 		this.app = app;
 		this.vp = vp;
-
+		
 		setModal(true);
 		setResizable(false);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
@@ -252,6 +254,7 @@ public class VentanaFinalJuego extends JDialog {
 
 		ResourceBundle textos = ResourceBundle.getBundle("rcs/textos", this.ubicacion);
 
+		setTitle(textos.getString("tituloFinDeJuego"));
 		localizarPanelInicial(textos);
 		localizarPanelObtenerDescuento(textos);
 	}

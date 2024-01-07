@@ -41,20 +41,13 @@ public class PanelHotel extends JPanel {
 	private JLabel lbNombreHotel;
 	private JLabel lbFotoHotel;
 	private Component horizontalGlue;
+	private MostrarInfoHotel mIH = new MostrarInfoHotel();
 
 	/**
 	 * Create the panel.
 	 */
 	public PanelHotel(Horrotel app, VentanaPrincipal vp, Hotel hotel) {
-		addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				PanelInfoHotel pIH = new PanelInfoHotel(app, vp, hotel);
-				vp.getPnInfoHotel().removeAll();
-				vp.getPnInfoHotel().add(pIH);
-				vp.mostrarInfoHotel();
-			}
-		});
+		addMouseListener(mIH);
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -118,6 +111,7 @@ public class PanelHotel extends JPanel {
 			pnFoto.setBackground(Color.DARK_GRAY);
 			pnFoto.setLayout(new BorderLayout(0, 0));
 			pnFoto.add(getLbFotoHotel());
+			pnFoto.addMouseListener(mIH);
 		}
 		return pnFoto;
 	}
@@ -228,6 +222,16 @@ public class PanelHotel extends JPanel {
 			// Añadimos el panel al otro panel
 			getPnEncantamientos().add(pn);
 		}
+	}
+	
+	private class MostrarInfoHotel extends MouseAdapter {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PanelInfoHotel pIH = new PanelInfoHotel(app, vp, hotel);
+				vp.getPnInfoHotel().removeAll();
+				vp.getPnInfoHotel().add(pIH);
+				vp.mostrarInfoHotel();
+			}
 	}
 
 }

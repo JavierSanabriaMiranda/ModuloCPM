@@ -256,5 +256,32 @@ public class CatalogoHoteles {
 			diminutivos.add(encantamiento.getDiminutivo());
 		return diminutivos;
 	}
+	
+	/**
+	 * Devuelve el nombre del hotel en español según su código o null si el código no corresponde con ningún castillo
+	 * 
+	 * @param codigo del hotel a encontrar
+	 * @return nombre en español del hotel
+	 */
+	public String getHotelPorCodigoES(String codigo) {
+		for (Hotel hotel : hotelesES)
+			if (hotel.getCodigo().equals(codigo))
+				return hotel.getDenominacion();
+		return null;
+	}
+	
+	/**
+	 * Devuelve el nombre del hotel en inglés según su código o null si el código no corresponde con ningún castillo
+	 * 
+	 * @param codigo del hotel a encontrar
+	 * @return nombre en inglés del hotel
+	 */
+	public String getHotelPorCodigoEN(String codigo) {
+		for (Hotel hotel : hotelesEN)
+			if (hotel.getCodigo().equals(codigo))
+				return hotel.getDenominacion();
+		return null;
+	}
+	
 
 }

@@ -160,5 +160,12 @@ public class Juego {
 	public List<Personaje> getEnemigosEliminados() {
 		return tablero.getEnemigosEliminados();
 	}
+	
+	/**
+	 * @return true si el juego ha finalizado con premio
+	 */
+	public boolean hayPremio() {
+		return this.premio != null;
+	}
 
 }

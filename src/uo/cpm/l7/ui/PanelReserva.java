@@ -52,7 +52,7 @@ public class PanelReserva extends JPanel {
 	private JLabel lbPrecio;
 	private JLabel lbValorPrecio;
 	private JButton btCancelarReserva;
-	private Component horizontalGlue;
+	private Component separadorEntrePrecioYBtCancelar;
 
 	/**
 	 * Create the panel.
@@ -68,6 +68,7 @@ public class PanelReserva extends JPanel {
 		add(getPnNombreCastillo(), BorderLayout.NORTH);
 		add(getPnInfoReserva(), BorderLayout.CENTER);
 		add(getPnInferior(), BorderLayout.SOUTH);
+		
 		
 		localizar();
 	}
@@ -224,7 +225,7 @@ public class PanelReserva extends JPanel {
 			pnInferior.setBackground(Color.DARK_GRAY);
 			pnInferior.setLayout(new BoxLayout(pnInferior, BoxLayout.X_AXIS));
 			pnInferior.add(getPnPrecio());
-			pnInferior.add(getHorizontalGlue());
+			pnInferior.add(getSeparadorEntrePrecioYBtCancelar());
 			pnInferior.add(getBtCancelarReserva());
 		}
 		return pnInferior;
@@ -269,11 +270,11 @@ public class PanelReserva extends JPanel {
 		return btCancelarReserva;
 	}
 	
-	private Component getHorizontalGlue() {
-		if (horizontalGlue == null) {
-			horizontalGlue = Box.createHorizontalGlue();
+	private Component getSeparadorEntrePrecioYBtCancelar() {
+		if (separadorEntrePrecioYBtCancelar == null) {
+			separadorEntrePrecioYBtCancelar = Box.createHorizontalGlue();
 		}
-		return horizontalGlue;
+		return separadorEntrePrecioYBtCancelar;
 	}
 	
 	private void localizar() {

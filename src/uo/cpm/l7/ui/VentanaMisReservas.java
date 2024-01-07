@@ -124,12 +124,33 @@ public class VentanaMisReservas extends JDialog {
 		getBtSalir().setMnemonic(textos.getString("mnemonicSalir").charAt(0));
 	}
 	
+	/**
+	 * Crea los paneles con las reservas correspondientes al DNI introducido
+	 */
 	protected void crearPanelesReserva() {
 		getPnReservas().removeAll();
+		repaint();
 		for (int i = 0; i < app.getNumReservas(DNI); i++) {
 			PanelReserva pR = new PanelReserva(this.vp, this.app, app.getReserva(DNI, i), this);
 			getPnReservas().add(pR);
 		}
+		if (getPnReservas().getComponentCount() < 3)
+			ponerPanelesInvisibles();
+		repaint();
 		validate();
+	}
+	
+	/**
+	 * Cuando el número de reservas es menor que 3, se crean paneles invisibles hasta que hayan 3 paneles en el panel de reservas con
+	 * la intención de mantener la proporcion de los paneles en el gridLayout
+	 */
+	private void ponerPanelesInvisibles() {
+		int numComponentesReales = getPnReservas().getComponentCount();
+		for (int i = numComponentesReales; i < 3; i++) {
+			JPanel pn = new JPanel();
+			pn.setVisible(false);
+			getPnReservas().add(pn);
+		}
+			
 	}
 }

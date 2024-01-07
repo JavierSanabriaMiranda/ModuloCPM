@@ -49,7 +49,7 @@ public class PanelInfoHotel extends JPanel {
 	private VentanaPrincipal vp;
 	private Hotel hotel;
 	private JPanel pnSuperior;
-	private JPanel pnDescripciónHotel;
+	private JPanel pnDescripcionHotel;
 	private JPanel pnFotoYPrecio;
 	private JLabel lbFoto;
 	private JLabel lbPrecioPorNoche;
@@ -81,32 +81,36 @@ public class PanelInfoHotel extends JPanel {
 	private JSpinner spHabitaciones;
 	private JSpinner spPersonas;
 	private JTextField txPrecioFinal;
-	private Component horizontalStrut;
-	private Component horizontalStrut_1;
-	private Component horizontalGlue;
-	private Component horizontalGlue_1;
-	private Component horizontalStrut_2;
-	private Component horizontalStrut_2_1;
-	private Component horizontalStrut_3;
-	private Component horizontalStrut_5;
-	private Component horizontalStrut_6;
-	private Component horizontalStrut_7;
+	private Component separadorHabitacionesYPanelReserva;
+	private Component separadorHabitacionesYPanelReserva2;
+	private Component separadorLbHabitacionesYSp;
+	private Component separadorLbPersonasYSp;
+	private Component separadorIndexador2;
+	private Component separadorIndexador1;
+	private Component separadorIndexador5;
+	private Component separadorIndexador7;
+	private Component separadorIndexador6;
+	private Component separadorIndexador10;
 	private ActualizarPrecio aP = new ActualizarPrecio();
 	private ActualizarPrecioParaCb aPC = new ActualizarPrecioParaCb();
 	private ActualizarCbSalida aCS = new ActualizarCbSalida();
 	private JComboBox<String> cbFechaEntrada;
 	private JComboBox<String> cbFechaSalida;
-	private Component horizontalGlue_2;
-	private Component horizontalGlue_3;
-	private Component horizontalStrut_2_2;
-	private Component horizontalStrut_2_3;
-	private Component horizontalStrut_5_1;
-	private Component horizontalStrut_5_2;
-	private Component horizontalGlue_4;
+	private Component separadorLbFechaEntradaYCb;
+	private Component separadorLbFechaSalidaYCb;
+	private Component separadorIndexador3;
+	private Component separadorIndexador4;
+	private Component separadorIndexador8;
+	private Component separadorIndexador9;
+	private Component separadorLbPrecioYTxPrecio;
 	// Valores importantes para la reserva
 	private int numeroHabitaciones;
-	private int numeroDias;
+	private int numeroPersonas;
+	private String fechaEntrada;
+	private String fechaSalida;
 	private JPanel pnLbReserva;
+	private double precioFinal;
+	private int numDias;
 
 	/**
 	 * Create the panel.
@@ -132,6 +136,7 @@ public class PanelInfoHotel extends JPanel {
 		// Configuramos los atributos que vamos a poner al texto del JTextPane (Texto
 		// centrado)
 		StyleConstants.setAlignment(centrarTexto, StyleConstants.ALIGN_CENTER);
+		
 		setLayout(new GridLayout(0, 1, 0, 0));
 		add(getPnSuperior());
 		add(getPnInferior());
@@ -146,22 +151,22 @@ public class PanelInfoHotel extends JPanel {
 			pnSuperior.setBackground(Color.DARK_GRAY);
 			pnSuperior.setLayout(new GridLayout(0, 2, 0, 0));
 			pnSuperior.add(getPnFotoYPrecio());
-			pnSuperior.add(getPnDescripciónHotel());
+			pnSuperior.add(getPnDescripcionHotel());
 		}
 		return pnSuperior;
 	}
 
-	private JPanel getPnDescripciónHotel() {
-		if (pnDescripciónHotel == null) {
-			pnDescripciónHotel = new JPanel();
-			pnDescripciónHotel.setMaximumSize(new Dimension(1500, 1500));
-			pnDescripciónHotel.setBackground(Color.DARK_GRAY);
-			pnDescripciónHotel.setLayout(new BoxLayout(pnDescripciónHotel, BoxLayout.Y_AXIS));
-			pnDescripciónHotel.add(getLbNombreHotel());
-			pnDescripciónHotel.add(getLbInfoMaxPersonasHabitacion());
-			pnDescripciónHotel.add(getTxPnDescripcion());
+	private JPanel getPnDescripcionHotel() {
+		if (pnDescripcionHotel == null) {
+			pnDescripcionHotel = new JPanel();
+			pnDescripcionHotel.setMaximumSize(new Dimension(1500, 1500));
+			pnDescripcionHotel.setBackground(Color.DARK_GRAY);
+			pnDescripcionHotel.setLayout(new BoxLayout(pnDescripcionHotel, BoxLayout.Y_AXIS));
+			pnDescripcionHotel.add(getLbNombreHotel());
+			pnDescripcionHotel.add(getLbInfoMaxPersonasHabitacion());
+			pnDescripcionHotel.add(getTxPnDescripcion());
 		}
-		return pnDescripciónHotel;
+		return pnDescripcionHotel;
 	}
 
 	private JPanel getPnFotoYPrecio() {
@@ -318,11 +323,11 @@ public class PanelInfoHotel extends JPanel {
 			pnHabitaciones.setMaximumSize(new Dimension(999999, 50));
 			pnHabitaciones.setBackground(Color.DARK_GRAY);
 			pnHabitaciones.setLayout(new BoxLayout(pnHabitaciones, BoxLayout.X_AXIS));
-			pnHabitaciones.add(getHorizontalStrut_2());
+			pnHabitaciones.add(getSeparadorIndexador2());
 			pnHabitaciones.add(getLbHabitaciones());
-			pnHabitaciones.add(getHorizontalGlue());
+			pnHabitaciones.add(getSeparadorLbHabitacionesYSp());
 			pnHabitaciones.add(getSpHabitaciones());
-			pnHabitaciones.add(getHorizontalStrut_5());
+			pnHabitaciones.add(getSeparadorIndexador7());
 		}
 		return pnHabitaciones;
 	}
@@ -333,11 +338,11 @@ public class PanelInfoHotel extends JPanel {
 			pnPersonas.setMaximumSize(new Dimension(999999, 50));
 			pnPersonas.setBackground(Color.DARK_GRAY);
 			pnPersonas.setLayout(new BoxLayout(pnPersonas, BoxLayout.X_AXIS));
-			pnPersonas.add(getHorizontalStrut_2_1());
+			pnPersonas.add(getSeparadorIndexador1());
 			pnPersonas.add(getLbPersonas());
-			pnPersonas.add(getHorizontalGlue_1());
+			pnPersonas.add(getSeparadorLbPersonasYSp());
 			pnPersonas.add(getSpPersonas());
-			pnPersonas.add(getHorizontalStrut_6());
+			pnPersonas.add(getSeparadorIndexador6());
 		}
 		return pnPersonas;
 	}
@@ -348,11 +353,11 @@ public class PanelInfoHotel extends JPanel {
 			pnFechaEntrada.setMaximumSize(new Dimension(999999, 50));
 			pnFechaEntrada.setBackground(Color.DARK_GRAY);
 			pnFechaEntrada.setLayout(new BoxLayout(pnFechaEntrada, BoxLayout.X_AXIS));
-			pnFechaEntrada.add(getHorizontalStrut_2_2());
+			pnFechaEntrada.add(getSeparadorIndexador3());
 			pnFechaEntrada.add(getLbEntrada());
-			pnFechaEntrada.add(getHorizontalGlue_2());
+			pnFechaEntrada.add(getSeparadorLbFechaEntradaYCb());
 			pnFechaEntrada.add(getCbFechaEntrada());
-			pnFechaEntrada.add(getHorizontalStrut_5_1());
+			pnFechaEntrada.add(getSeparadorIndexador8());
 		}
 		return pnFechaEntrada;
 	}
@@ -363,11 +368,11 @@ public class PanelInfoHotel extends JPanel {
 			pnFechaSalida.setMaximumSize(new Dimension(999999, 50));
 			pnFechaSalida.setBackground(Color.DARK_GRAY);
 			pnFechaSalida.setLayout(new BoxLayout(pnFechaSalida, BoxLayout.X_AXIS));
-			pnFechaSalida.add(getHorizontalStrut_2_3());
+			pnFechaSalida.add(getSeparadorIndexador4());
 			pnFechaSalida.add(getLbSalida());
-			pnFechaSalida.add(getHorizontalGlue_3());
+			pnFechaSalida.add(getSeparadorLbFechaSalidaYCb());
 			pnFechaSalida.add(getCbFechaSalida());
-			pnFechaSalida.add(getHorizontalStrut_5_2());
+			pnFechaSalida.add(getSeparadorIndexador9());
 		}
 		return pnFechaSalida;
 	}
@@ -378,11 +383,11 @@ public class PanelInfoHotel extends JPanel {
 			pnPrecioFinal.setMaximumSize(new Dimension(999999, 50));
 			pnPrecioFinal.setBackground(Color.DARK_GRAY);
 			pnPrecioFinal.setLayout(new BoxLayout(pnPrecioFinal, BoxLayout.X_AXIS));
-			pnPrecioFinal.add(getHorizontalStrut_3());
+			pnPrecioFinal.add(getSeparadorIndexador5());
 			pnPrecioFinal.add(getLbPrecioFinal());
-			pnPrecioFinal.add(getHorizontalGlue_4());
+			pnPrecioFinal.add(getSeparadorLbPrecioYTxPrecio());
 			pnPrecioFinal.add(getTxPrecioFinal());
-			pnPrecioFinal.add(getHorizontalStrut_7());
+			pnPrecioFinal.add(getSeparadorIndexador10());
 		}
 		return pnPrecioFinal;
 	}
@@ -518,73 +523,73 @@ public class PanelInfoHotel extends JPanel {
 	}
 
 	private Component getHorizontalStrut_1() {
-		if (horizontalStrut == null) {
-			horizontalStrut = Box.createHorizontalStrut(20);
+		if (separadorHabitacionesYPanelReserva == null) {
+			separadorHabitacionesYPanelReserva = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut;
+		return separadorHabitacionesYPanelReserva;
 	}
 
 	private Component getHorizontalStrut_1_1() {
-		if (horizontalStrut_1 == null) {
-			horizontalStrut_1 = Box.createHorizontalStrut(20);
+		if (separadorHabitacionesYPanelReserva2 == null) {
+			separadorHabitacionesYPanelReserva2 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_1;
+		return separadorHabitacionesYPanelReserva2;
 	}
 
-	private Component getHorizontalGlue() {
-		if (horizontalGlue == null) {
-			horizontalGlue = Box.createHorizontalGlue();
+	private Component getSeparadorLbHabitacionesYSp() {
+		if (separadorLbHabitacionesYSp == null) {
+			separadorLbHabitacionesYSp = Box.createHorizontalGlue();
 		}
-		return horizontalGlue;
+		return separadorLbHabitacionesYSp;
 	}
 
-	private Component getHorizontalGlue_1() {
-		if (horizontalGlue_1 == null) {
-			horizontalGlue_1 = Box.createHorizontalGlue();
+	private Component getSeparadorLbPersonasYSp() {
+		if (separadorLbPersonasYSp == null) {
+			separadorLbPersonasYSp = Box.createHorizontalGlue();
 		}
-		return horizontalGlue_1;
+		return separadorLbPersonasYSp;
 	}
 
-	private Component getHorizontalStrut_2() {
-		if (horizontalStrut_2 == null) {
-			horizontalStrut_2 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador2() {
+		if (separadorIndexador2 == null) {
+			separadorIndexador2 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_2;
+		return separadorIndexador2;
 	}
 
-	private Component getHorizontalStrut_2_1() {
-		if (horizontalStrut_2_1 == null) {
-			horizontalStrut_2_1 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador1() {
+		if (separadorIndexador1 == null) {
+			separadorIndexador1 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_2_1;
+		return separadorIndexador1;
 	}
 
-	private Component getHorizontalStrut_3() {
-		if (horizontalStrut_3 == null) {
-			horizontalStrut_3 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador5() {
+		if (separadorIndexador5 == null) {
+			separadorIndexador5 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_3;
+		return separadorIndexador5;
 	}
 
-	private Component getHorizontalStrut_5() {
-		if (horizontalStrut_5 == null) {
-			horizontalStrut_5 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador7() {
+		if (separadorIndexador7 == null) {
+			separadorIndexador7 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_5;
+		return separadorIndexador7;
 	}
 
-	private Component getHorizontalStrut_6() {
-		if (horizontalStrut_6 == null) {
-			horizontalStrut_6 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador6() {
+		if (separadorIndexador6 == null) {
+			separadorIndexador6 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_6;
+		return separadorIndexador6;
 	}
 
-	private Component getHorizontalStrut_7() {
-		if (horizontalStrut_7 == null) {
-			horizontalStrut_7 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador10() {
+		if (separadorIndexador10 == null) {
+			separadorIndexador10 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_7;
+		return separadorIndexador10;
 	}
 
 	private JComboBox<String> getCbFechaEntrada() {
@@ -608,57 +613,57 @@ public class PanelInfoHotel extends JPanel {
 		return cbFechaSalida;
 	}
 
-	private Component getHorizontalGlue_2() {
-		if (horizontalGlue_2 == null) {
-			horizontalGlue_2 = Box.createHorizontalGlue();
+	private Component getSeparadorLbFechaEntradaYCb() {
+		if (separadorLbFechaEntradaYCb == null) {
+			separadorLbFechaEntradaYCb = Box.createHorizontalGlue();
 		}
-		return horizontalGlue_2;
+		return separadorLbFechaEntradaYCb;
 	}
 
-	private Component getHorizontalGlue_3() {
-		if (horizontalGlue_3 == null) {
-			horizontalGlue_3 = Box.createHorizontalGlue();
+	private Component getSeparadorLbFechaSalidaYCb() {
+		if (separadorLbFechaSalidaYCb == null) {
+			separadorLbFechaSalidaYCb = Box.createHorizontalGlue();
 		}
-		return horizontalGlue_3;
+		return separadorLbFechaSalidaYCb;
 	}
 
-	private Component getHorizontalStrut_2_2() {
-		if (horizontalStrut_2_2 == null) {
-			horizontalStrut_2_2 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador3() {
+		if (separadorIndexador3 == null) {
+			separadorIndexador3 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_2_2;
+		return separadorIndexador3;
 	}
 
-	private Component getHorizontalStrut_2_3() {
-		if (horizontalStrut_2_3 == null) {
-			horizontalStrut_2_3 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador4() {
+		if (separadorIndexador4 == null) {
+			separadorIndexador4 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_2_3;
+		return separadorIndexador4;
 	}
 	
-	private Component getHorizontalStrut_5_1() {
-		if (horizontalStrut_5_1 == null) {
-			horizontalStrut_5_1 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador8() {
+		if (separadorIndexador8 == null) {
+			separadorIndexador8 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_5_1;
+		return separadorIndexador8;
 	}
-	private Component getHorizontalStrut_5_2() {
-		if (horizontalStrut_5_2 == null) {
-			horizontalStrut_5_2 = Box.createHorizontalStrut(20);
+	private Component getSeparadorIndexador9() {
+		if (separadorIndexador9 == null) {
+			separadorIndexador9 = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrut_5_2;
+		return separadorIndexador9;
 	}
-	private Component getHorizontalGlue_4() {
-		if (horizontalGlue_4 == null) {
-			horizontalGlue_4 = Box.createHorizontalGlue();
+	private Component getSeparadorLbPrecioYTxPrecio() {
+		if (separadorLbPrecioYTxPrecio == null) {
+			separadorLbPrecioYTxPrecio = Box.createHorizontalGlue();
 		}
-		return horizontalGlue_4;
+		return separadorLbPrecioYTxPrecio;
 	}
 
 	/**
-	 * Adapta el tamaño de la imagen del hotel al tamaño del panel que lo contiene
+	 * Adapta el tamaï¿½o de la imagen del hotel al tamaï¿½o del panel que lo contiene
 	 * 
-	 * @param label      en la que se ubicará foto del hotel que se quiere
+	 * @param label      en la que se ubicarï¿½ foto del hotel que se quiere
 	 *                   redimensionar
 	 * @param rutaImagen nombre de la imagen
 	 */
@@ -670,9 +675,9 @@ public class PanelInfoHotel extends JPanel {
 	}
 
 	/**
-	 * Adapta el tamaño de la imagen del hotel al tamaño del panel que lo contiene
+	 * Adapta el tamaï¿½o de la imagen del hotel al tamaï¿½o del panel que lo contiene
 	 * 
-	 * @param label      en la que se ubicará foto del hotel que se quiere
+	 * @param label      en la que se ubicarï¿½ foto del hotel que se quiere
 	 *                   redimensionar
 	 * @param rutaImagen nombre de la imagen
 	 */
@@ -712,7 +717,7 @@ public class PanelInfoHotel extends JPanel {
 
 	private void rellenarTxEncantamientosYHabitaciones(ResourceBundle textos) {
 		StringBuilder sb = new StringBuilder();
-		// Ponemos el país
+		// Ponemos el paï¿½s
 		sb.append(textos.getString("pais"));
 		sb.append(" " + hotel.getPais());
 
@@ -731,7 +736,7 @@ public class PanelInfoHotel extends JPanel {
 	}
 
 	/**
-	 * Rellena las checkboxes de fechas de entrada y salida con los formatos correctos segun la localización
+	 * Rellena las checkboxes de fechas de entrada y salida con los formatos correctos segun la localizaciï¿½n
 	 * @param textos
 	 */
 	private void rellenarCheckBoxes(ResourceBundle textos) {
@@ -740,29 +745,31 @@ public class PanelInfoHotel extends JPanel {
 		String[] fechasSalida = new String[365];
 		Date fechaActual = new Date();
 		
-		// Creamos el modelo para el combo de salida empezando un día despues que el de entrada
+		// Creamos el modelo para el combo de salida empezando un dï¿½a despues que el de entrada
 		for (int i = 0; i < 365; i++) {
 			fechasEntrada[i] = formatoFecha.format(fechaActual);
 			fechasSalida[i] = formatoFecha.format(fechaActual.getTime() + 24 * 3600 * 1000);
-			// Añadimos a la fecha actual un día en milisegundos
+			// Aï¿½adimos a la fecha actual un dï¿½a en milisegundos
 			fechaActual.setTime(fechaActual.getTime() + 24 * 3600 * 1000);
 		}
 		
 		
 		getCbFechaEntrada().setModel(new DefaultComboBoxModel<>(fechasEntrada));
 		getCbFechaSalida().setModel(new DefaultComboBoxModel<>(fechasSalida));
+		
+		this.fechaEntrada = (String) getCbFechaEntrada().getSelectedItem();
+		this.fechaSalida = (String) getCbFechaSalida().getSelectedItem();
 	}
 	
 	/**
 	 * Actualiza el combo de fechas de salida para que la primera fecha disponible que muestre sea la 
-	 * del día siguiente a la seleccionada por el de entrada
+	 * del dï¿½a siguiente a la seleccionada por el de entrada
 	 */
 	private void actualizarCbFechaSalida() {
 		DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.SHORT, vp.getUbicacion());
 		String fechaSeleccionadaString = (String) getCbFechaEntrada().getSelectedItem();
 		
-		if (calcularDiasSeleccionados() > 0)
-			return;
+
 		
 		try {
 			Date fechaSeleccionadaEntrada = formatoFecha.parse(fechaSeleccionadaString);
@@ -770,10 +777,10 @@ public class PanelInfoHotel extends JPanel {
 			fechaSalida.setTime(fechaSeleccionadaEntrada.getTime() + 24 * 3600 * 1000);
 			
 			String[] fechas = new String[365];
-			// Añadimos 100 días más (Máximo tiempo de reserva)
+			// Aï¿½adimos 100 dï¿½as mï¿½s (Mï¿½ximo tiempo de reserva)
 			for (int i = 0; i < 100; i++) {
 				fechas[i] = formatoFecha.format(fechaSalida);
-				// Añadimos a la fecha actual un día en milisegundos
+				// Aï¿½adimos a la fecha actual un dï¿½a en milisegundos
 				fechaSalida.setTime(fechaSalida.getTime() + 24 * 3600 * 1000);
 			}
 			getCbFechaSalida().setModel(new DefaultComboBoxModel<>(fechas));
@@ -801,6 +808,7 @@ public class PanelInfoHotel extends JPanel {
 			int diaEntrada = (int) (fechaSeleccionadaEntrada.getTime()/(24*3600*1000));
 			
 			diasSeleccionados = diaSalida - diaEntrada;
+			this.numDias = diasSeleccionados;
 			
 		} catch (ParseException e) {
 			throw new IllegalArgumentException("El formato de fecha recibido era incorrecto, se han formateado mal las fechas");
@@ -824,7 +832,7 @@ public class PanelInfoHotel extends JPanel {
 	}
 	
 	/**
-	 * Modifica el spinner de habitaciones en función del spinner de personas haciendo que para cada habitación hayan un máximo de 2 personas
+	 * Modifica el spinner de habitaciones en funciï¿½n del spinner de personas haciendo que para cada habitaciï¿½n hayan un mï¿½ximo de 2 personas
 	 */
 	private void ponerMinimoHabitaciones() {
 		int valorMinimoHabitaciones = app.getNumeroMinimoDeHabitaciones((int) getSpPersonas().getValue());
@@ -844,12 +852,23 @@ public class PanelInfoHotel extends JPanel {
 		int habitaciones = (int) getSpHabitaciones().getValue();
 		int numDias = calcularDiasSeleccionados();
 		
-		this.numeroHabitaciones = habitaciones;
-		this.numeroDias = numDias;
+		
 
 		double precioFinal = app.calcularPrecioReserva(habitaciones, numDias, hotel);
-		getTxPrecioFinal().setText(String.format("%.2f€", precioFinal));
-
+		getTxPrecioFinal().setText(String.format("%.2fï¿½", precioFinal));
+		
+		actualizarDatosReserva(habitaciones, precioFinal);
+	}
+	
+	/**
+	 * Actualiza los atributos de los datos de la reserva
+	 */
+	private void actualizarDatosReserva(int habitaciones, double precioFinal) {
+		this.numeroHabitaciones = habitaciones;
+		this.numeroPersonas = (int) getSpPersonas().getValue();
+		this.precioFinal = precioFinal;
+		this.fechaEntrada = (String) getCbFechaEntrada().getSelectedItem();
+		this.fechaSalida = (String) getCbFechaSalida().getSelectedItem();
 	}
 
 	private class ActualizarPrecio implements ChangeListener {
@@ -879,7 +898,10 @@ public class PanelInfoHotel extends JPanel {
 	}
 	
 	private void mostrarVentanaParaReservar() {
-		//TODO Generar un JDialog 
+		VentanaReserva pR = new VentanaReserva(vp.getUbicacion(), numeroHabitaciones, numeroPersonas, fechaEntrada, 
+				fechaSalida, numDias, precioFinal, hotel, this.app, this.vp);
+		pR.setLocationRelativeTo(this);
+		pR.setVisible(true);
 	}
 
 	private JPanel getPnLbReserva() {

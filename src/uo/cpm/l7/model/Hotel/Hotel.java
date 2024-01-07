@@ -4,6 +4,9 @@ import java.util.List;
 
 public class Hotel {
 	
+	public static final int MAX_PERSONAS_POR_HABITACION = 2;
+	
+	
 	/**
 	 * Codigo del Hotel
 	 */
@@ -82,6 +85,18 @@ public class Hotel {
 
 	public List<Encantamiento> getEncantamientos() {
 		return encantamientos;
+	}
+	
+	public int getNumeroEncantamientos() {
+		return encantamientos.size();
+	}
+	
+	/**
+	 * @param pos posición del encantamiento a devolver
+	 * @return encantamiento de la lista de encantamientos que está en la posición "pos"
+	 */
+	public Encantamiento getEncantamiento(int pos) {
+		return encantamientos.get(pos);
 	}
 
 	

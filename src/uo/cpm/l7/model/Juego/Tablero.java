@@ -238,7 +238,7 @@ public class Tablero {
 	/**
 	 * @return true si se ha eliminado a un fantasma de cada tipo
 	 */
-	private boolean hayPremio() {
+	public boolean hayPremio() {
 		return enemigosEliminados.contains(Personaje.FANTASMA_BASICO) && enemigosEliminados.contains(Personaje.FANTASMA_CALABAZA) 
 				&& enemigosEliminados.contains(Personaje.FANTASMA_MOMIA) && enemigosEliminados.contains(Personaje.FANTASMA_PIRATA)
 				&& enemigosEliminados.contains(Personaje.FANTASMA_ZOMBIE);

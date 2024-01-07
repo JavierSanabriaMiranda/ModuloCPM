@@ -8,6 +8,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URL;
 
 import uo.cpm.l7.service.Horrotel;
 
@@ -39,6 +41,9 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.Box;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -49,6 +54,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.JTextArea;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
+import java.awt.event.KeyEvent;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -71,10 +83,9 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel pnCentralMenuInicio;
 	private JButton btIrAReservarMenu;
 	private JButton btIrAJugarMenu;
-	private Component verticalStrutMenuInicio;
+	private Component separadorVerticalBtMenuInicio;
 	private JPanel pnBtAtras;
 	private JButton btAtras;
-	private Component horizontalGlueMenuInicio;
 	private PanelJuego panelJuego;
 	private JPanel pnMenuJuego;
 	private JPanel pnTituloJuego;
@@ -87,9 +98,9 @@ public class VentanaPrincipal extends JFrame {
 	// centrado)
 	private SimpleAttributeSet centrarTexto = new SimpleAttributeSet();
 
-	private Component verticalGlue;
-	private Component verticalStrutMenuJuego1;
-	private Component verticalStrutMenuJuego2;
+	private Component separadorDinamicoBtJugarYParteInferiorPantalla;
+	private Component separadorEntreReglasYBtJugar;
+	private Component separadorEntreReglasEInfoDescuento;
 	private JPanel pnDadoYValor;
 	private JButton btDado;
 	private JLabel lbValorDado;
@@ -99,7 +110,7 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel lbNumeroTiradas;
 	private JPanel pnNumTiradas;
 	private JLabel lbTiradas;
-	private Component horizontalGlue;
+	private Component separadorEntreValorDadoYDado;
 	private Locale ubicacion = Locale.getDefault(Locale.Category.FORMAT);
 	private JPanel pnSuperiorJuego;
 	private JLabel lbEliminaciones;
@@ -129,15 +140,15 @@ public class VentanaPrincipal extends JFrame {
 	private JPanel pnSliderPrecio;
 	private JLabel lbPrecio;
 	private JPanel pnBotonesYBusqueda;
-	private Component horizontalGlueBtCatalogo;
-	private Component horizontalStrutBtCatalogo;
+	private Component separadorBtFiltrosYBarraBusqueda;
+	private Component separadorBarrabusquedaYBtMisReservas;
 	private JButton btAplicarFiltro;
 	private JPanel pnComboUbicaciones;
 	private JLabel lbUbicacion;
 	private JPanel pnLbPrecio;
 	private JLabel lbValorPrecio;
-	private Component horizontalGlue_1;
-	private Component horizontalGlue_2;
+	private Component separadorPrecioYEncantamientos;
+	private Component separadorUbicacionYPrecio;
 	private JPanel pnAplicarYQuitarFiltro;
 	private JButton btQuitarFiltro;
 	private Component verticalStrut;
@@ -147,6 +158,14 @@ public class VentanaPrincipal extends JFrame {
 	private JLabel lbInfoDiminutivos;
 	private JTextArea txInfoDiminutivos;
 	private JPanel pnInfoHotel;
+	private JMenuBar menuBar;
+	private JMenu mnHorrotel;
+	private JMenuItem mnSalir;
+	private JMenuItem mnIrAJugar;
+	private JMenu mnAyuda;
+	private JMenuItem mnAcercaDe;
+	private JSeparator separator;
+	private JMenuItem mnContenidos;
 
 	/**
 	 * Create the frame.
@@ -162,6 +181,7 @@ public class VentanaPrincipal extends JFrame {
 		setMinimumSize(new Dimension(1100, 600));
 
 		setLocationRelativeTo(null);
+		setJMenuBar(getMenuBar_1());
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.DARK_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -170,6 +190,7 @@ public class VentanaPrincipal extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(getPanelVentanas());
 		localizar();
+		cargaAyuda();
 	}
 
 	////////////////////// GETTERS DE COMPONENTES //////////////////////
@@ -297,7 +318,7 @@ public class VentanaPrincipal extends JFrame {
 			pnCentralMenuInicio.setBackground(Color.DARK_GRAY);
 			pnCentralMenuInicio.setLayout(new BoxLayout(pnCentralMenuInicio, BoxLayout.Y_AXIS));
 			pnCentralMenuInicio.add(getBtIrAReservarMenu());
-			pnCentralMenuInicio.add(getVerticalStrutMenuInicio());
+			pnCentralMenuInicio.add(getSeparadorVerticalBtMenuInicio());
 			pnCentralMenuInicio.add(getBtIrAJugarMenu());
 		}
 		return pnCentralMenuInicio;
@@ -325,19 +346,18 @@ public class VentanaPrincipal extends JFrame {
 		return btIrAJugarMenu;
 	}
 
-	private Component getVerticalStrutMenuInicio() {
-		if (verticalStrutMenuInicio == null) {
-			verticalStrutMenuInicio = Box.createVerticalStrut(20);
+	private Component getSeparadorVerticalBtMenuInicio() {
+		if (separadorVerticalBtMenuInicio == null) {
+			separadorVerticalBtMenuInicio = Box.createVerticalStrut(20);
 		}
-		return verticalStrutMenuInicio;
+		return separadorVerticalBtMenuInicio;
 	}
 
 	private JPanel getPnBtAtras() {
 		if (pnBtAtras == null) {
 			pnBtAtras = new JPanel();
 			pnBtAtras.setBackground(Color.DARK_GRAY);
-			pnBtAtras.setLayout(new BoxLayout(pnBtAtras, BoxLayout.X_AXIS));
-			pnBtAtras.add(getHorizontalGlueMenuInicio());
+			pnBtAtras.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 			pnBtAtras.add(getBtAtras());
 		}
 		return pnBtAtras;
@@ -352,13 +372,6 @@ public class VentanaPrincipal extends JFrame {
 			btAtras.addActionListener(pasaPantalla);
 		}
 		return btAtras;
-	}
-
-	private Component getHorizontalGlueMenuInicio() {
-		if (horizontalGlueMenuInicio == null) {
-			horizontalGlueMenuInicio = Box.createHorizontalGlue();
-		}
-		return horizontalGlueMenuInicio;
 	}
 
 	private JPanel getPnMenuJuego() {
@@ -399,11 +412,11 @@ public class VentanaPrincipal extends JFrame {
 			pnCentralMenuJuego.setBackground(Color.DARK_GRAY);
 			pnCentralMenuJuego.setLayout(new BoxLayout(pnCentralMenuJuego, BoxLayout.Y_AXIS));
 			pnCentralMenuJuego.add(getTxPaneInfoDescuentoJuego());
-			pnCentralMenuJuego.add(getVerticalStrutMenuJuego2());
+			pnCentralMenuJuego.add(getSeparadorEntreReglasEInfoDescuento());
 			pnCentralMenuJuego.add(getTxReglasJuego());
-			pnCentralMenuJuego.add(getVerticalStrutMenuJuego1());
+			pnCentralMenuJuego.add(getSeparadorEntreReglasYBtJugar());
 			pnCentralMenuJuego.add(getBtJugar());
-			pnCentralMenuJuego.add(getVerticalGlue());
+			pnCentralMenuJuego.add(getSeparadorDinamicoBtJugarYParteInferiorPantalla());
 		}
 		return pnCentralMenuJuego;
 	}
@@ -454,25 +467,25 @@ public class VentanaPrincipal extends JFrame {
 		return btJugar;
 	}
 
-	private Component getVerticalGlue() {
-		if (verticalGlue == null) {
-			verticalGlue = Box.createVerticalGlue();
+	private Component getSeparadorDinamicoBtJugarYParteInferiorPantalla() {
+		if (separadorDinamicoBtJugarYParteInferiorPantalla == null) {
+			separadorDinamicoBtJugarYParteInferiorPantalla = Box.createVerticalGlue();
 		}
-		return verticalGlue;
+		return separadorDinamicoBtJugarYParteInferiorPantalla;
 	}
 
-	private Component getVerticalStrutMenuJuego1() {
-		if (verticalStrutMenuJuego1 == null) {
-			verticalStrutMenuJuego1 = Box.createVerticalStrut(20);
+	private Component getSeparadorEntreReglasYBtJugar() {
+		if (separadorEntreReglasYBtJugar == null) {
+			separadorEntreReglasYBtJugar = Box.createVerticalStrut(20);
 		}
-		return verticalStrutMenuJuego1;
+		return separadorEntreReglasYBtJugar;
 	}
 
-	private Component getVerticalStrutMenuJuego2() {
-		if (verticalStrutMenuJuego2 == null) {
-			verticalStrutMenuJuego2 = Box.createVerticalStrut(20);
+	private Component getSeparadorEntreReglasEInfoDescuento() {
+		if (separadorEntreReglasEInfoDescuento == null) {
+			separadorEntreReglasEInfoDescuento = Box.createVerticalStrut(20);
 		}
-		return verticalStrutMenuJuego2;
+		return separadorEntreReglasEInfoDescuento;
 	}
 
 	private JPanel getPnDadoYValor() {
@@ -487,7 +500,7 @@ public class VentanaPrincipal extends JFrame {
 			pnDadoYValor.setBackground(Color.DARK_GRAY);
 			pnDadoYValor.setLayout(new BoxLayout(pnDadoYValor, BoxLayout.X_AXIS));
 			pnDadoYValor.add(getPnValorDado());
-			pnDadoYValor.add(getHorizontalGlue());
+			pnDadoYValor.add(getSeparadorEntreValorDadoYDado());
 			pnDadoYValor.add(getPnDadoDisponible());
 			pnDadoYValor.add(getPnDado());
 		}
@@ -603,11 +616,11 @@ public class VentanaPrincipal extends JFrame {
 		return lbTiradas;
 	}
 
-	private Component getHorizontalGlue() {
-		if (horizontalGlue == null) {
-			horizontalGlue = Box.createHorizontalGlue();
+	private Component getSeparadorEntreValorDadoYDado() {
+		if (separadorEntreValorDadoYDado == null) {
+			separadorEntreValorDadoYDado = Box.createHorizontalGlue();
 		}
-		return horizontalGlue;
+		return separadorEntreValorDadoYDado;
 	}
 
 	private JPanel getPnSuperiorJuego() {
@@ -822,9 +835,9 @@ public class VentanaPrincipal extends JFrame {
 			pnFiltros.setBackground(Color.DARK_GRAY);
 			pnFiltros.setLayout(new BoxLayout(pnFiltros, BoxLayout.X_AXIS));
 			pnFiltros.add(getPnComboUbicaciones());
-			pnFiltros.add(getHorizontalGlue_2());
+			pnFiltros.add(getSeparadorUbicacionYPrecio());
 			pnFiltros.add(getPnSliderPrecio());
-			pnFiltros.add(getHorizontalGlue_1());
+			pnFiltros.add(getSeparadorPrecioYEncantamientos());
 			pnFiltros.add(getPnEncantamientosConLb());
 			pnFiltros.add(getTxInfoDiminutivos());
 			pnFiltros.add(getPnAplicarYQuitarFiltro());
@@ -906,27 +919,27 @@ public class VentanaPrincipal extends JFrame {
 			pnBotonesYBusqueda.setBackground(Color.DARK_GRAY);
 			pnBotonesYBusqueda.setLayout(new BoxLayout(pnBotonesYBusqueda, BoxLayout.X_AXIS));
 			pnBotonesYBusqueda.add(getBtAbrirFiltros());
-			pnBotonesYBusqueda.add(getHorizontalGlueBtCatalogo());
+			pnBotonesYBusqueda.add(getSeparadorBtFiltrosYBarraBusqueda());
 			pnBotonesYBusqueda.add(getPnBarraBusqueda());
-			pnBotonesYBusqueda.add(getHorizontalStrutBtCatalogo());
+			pnBotonesYBusqueda.add(getSeparadorBarrabusquedaYBtMisReservas());
 			pnBotonesYBusqueda.add(getBtMisReservas());
 		}
 		return pnBotonesYBusqueda;
 	}
 
-	private Component getHorizontalGlueBtCatalogo() {
-		if (horizontalGlueBtCatalogo == null) {
-			horizontalGlueBtCatalogo = Box.createHorizontalGlue();
-			horizontalGlueBtCatalogo.setMaximumSize(new Dimension(900, 0));
+	private Component getSeparadorBtFiltrosYBarraBusqueda() {
+		if (separadorBtFiltrosYBarraBusqueda == null) {
+			separadorBtFiltrosYBarraBusqueda = Box.createHorizontalGlue();
+			separadorBtFiltrosYBarraBusqueda.setMaximumSize(new Dimension(900, 0));
 		}
-		return horizontalGlueBtCatalogo;
+		return separadorBtFiltrosYBarraBusqueda;
 	}
 
-	private Component getHorizontalStrutBtCatalogo() {
-		if (horizontalStrutBtCatalogo == null) {
-			horizontalStrutBtCatalogo = Box.createHorizontalStrut(20);
+	private Component getSeparadorBarrabusquedaYBtMisReservas() {
+		if (separadorBarrabusquedaYBtMisReservas == null) {
+			separadorBarrabusquedaYBtMisReservas = Box.createHorizontalStrut(20);
 		}
-		return horizontalStrutBtCatalogo;
+		return separadorBarrabusquedaYBtMisReservas;
 	}
 
 	private JButton getBtAplicarFiltro() {
@@ -984,20 +997,20 @@ public class VentanaPrincipal extends JFrame {
 		return lbValorPrecio;
 	}
 
-	private Component getHorizontalGlue_1() {
-		if (horizontalGlue_1 == null) {
-			horizontalGlue_1 = Box.createHorizontalGlue();
-			horizontalGlue_1.setMaximumSize(new Dimension(400, 0));
+	private Component getSeparadorPrecioYEncantamientos() {
+		if (separadorPrecioYEncantamientos == null) {
+			separadorPrecioYEncantamientos = Box.createHorizontalGlue();
+			separadorPrecioYEncantamientos.setMaximumSize(new Dimension(400, 0));
 		}
-		return horizontalGlue_1;
+		return separadorPrecioYEncantamientos;
 	}
 
-	private Component getHorizontalGlue_2() {
-		if (horizontalGlue_2 == null) {
-			horizontalGlue_2 = Box.createHorizontalGlue();
-			horizontalGlue_2.setMaximumSize(new Dimension(500, 0));
+	private Component getSeparadorUbicacionYPrecio() {
+		if (separadorUbicacionYPrecio == null) {
+			separadorUbicacionYPrecio = Box.createHorizontalGlue();
+			separadorUbicacionYPrecio.setMaximumSize(new Dimension(500, 0));
 		}
-		return horizontalGlue_2;
+		return separadorUbicacionYPrecio;
 	}
 
 	private JPanel getPnAplicarYQuitarFiltro() {
@@ -1056,7 +1069,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return lbEncantamientos;
 	}
-	
+
 	private JLabel getLbInfoDiminutivos() {
 		if (lbInfoDiminutivos == null) {
 			lbInfoDiminutivos = new JLabel("");
@@ -1065,7 +1078,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return lbInfoDiminutivos;
 	}
-	
+
 	private JPanel getPnLbEncantamientos() {
 		if (pnLbEncantamientos == null) {
 			pnLbEncantamientos = new JPanel();
@@ -1076,7 +1089,7 @@ public class VentanaPrincipal extends JFrame {
 		}
 		return pnLbEncantamientos;
 	}
-	
+
 	private JTextArea getTxInfoDiminutivos() {
 		if (txInfoDiminutivos == null) {
 			txInfoDiminutivos = new JTextArea();
@@ -1088,6 +1101,82 @@ public class VentanaPrincipal extends JFrame {
 			txInfoDiminutivos.setVisible(false);
 		}
 		return txInfoDiminutivos;
+	}
+
+	private JMenuBar getMenuBar_1() {
+		if (menuBar == null) {
+			menuBar = new JMenuBar();
+			menuBar.add(getMnHorrotel());
+			menuBar.add(getMnAyuda());
+		}
+		return menuBar;
+	}
+
+	private JMenu getMnHorrotel() {
+		if (mnHorrotel == null) {
+			mnHorrotel = new JMenu("Horrotel");
+			mnHorrotel.setMnemonic('h');
+			mnHorrotel.add(getMnSalir());
+		}
+		return mnHorrotel;
+	}
+
+	private JMenuItem getMnSalir() {
+		if (mnSalir == null) {
+			mnSalir = new JMenuItem("");
+			mnSalir.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+				}
+			});
+			mnSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+		}
+		return mnSalir;
+	}
+
+	private JMenu getMnAyuda() {
+		if (mnAyuda == null) {
+			mnAyuda = new JMenu("");
+			mnAyuda.add(getMnContenidos());
+			mnAyuda.add(getSeparator());
+			mnAyuda.add(getMnAcercaDe());
+		}
+		return mnAyuda;
+	}
+
+	private JMenuItem getMnAcercaDe() {
+		if (mnAcercaDe == null) {
+			mnAcercaDe = new JMenuItem("");
+			mnAcercaDe.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					mostrarAcercaDe();
+				}
+			});
+		}
+		return mnAcercaDe;
+	}
+
+	private JSeparator getSeparator() {
+		if (separator == null) {
+			separator = new JSeparator();
+		}
+		return separator;
+	}
+
+	private JMenuItem getMnContenidos() {
+		if (mnContenidos == null) {
+			mnContenidos = new JMenuItem("");
+		}
+		return mnContenidos;
+	}
+
+	protected JPanel getPnInfoHotel() {
+		if (pnInfoHotel == null) {
+			pnInfoHotel = new JPanel();
+			pnInfoHotel.setBackground(Color.DARK_GRAY);
+			pnInfoHotel.setLayout(new BorderLayout(0, 0));
+		}
+		return pnInfoHotel;
 	}
 
 	////////////////////// INTERNACIONALIZACION //////////////////////
@@ -1119,6 +1208,7 @@ public class VentanaPrincipal extends JFrame {
 		localizarMenuJuego(textos);
 		localizarJuego(textos);
 		localizarCatalogo(textos);
+		localizarBarraDeMenu(textos);
 	}
 
 	/**
@@ -1207,10 +1297,10 @@ public class VentanaPrincipal extends JFrame {
 		} else {
 			getCbUbicaciones().setModel(new DefaultComboBoxModel<>(app.getUbicacionesEN()));
 		}
-		
+
 		// Se establece el texto del panel de información de diminutivos
 		getTxInfoDiminutivos().setText(textos.getString("infoDiminutivos"));
-		
+
 		// Se establece el tooltip para el icono de información de diminutivos
 		getLbInfoDiminutivos().setToolTipText(textos.getString("tooltipInfoDiminutivos"));
 
@@ -1232,6 +1322,20 @@ public class VentanaPrincipal extends JFrame {
 		getBtQuitarFiltro().setText(textos.getString("btQuitarFiltro"));
 		getBtQuitarFiltro().setMnemonic(textos.getString("mnemonicBtQuitarFiltro").charAt(0));
 		getLbEncantamientos().setText(textos.getString("encantamientos"));
+	}
+
+	private void localizarBarraDeMenu(ResourceBundle textos) {
+		getMnHorrotel().setMnemonic(textos.getString("mnemonicHorrotel").charAt(0));
+		getMnSalir().setText(textos.getString("mnSalir"));
+		getMnSalir().setMnemonic(textos.getString("mnemonicSalir").charAt(0));
+
+		getMnAyuda().setText(textos.getString("mnAyuda"));
+		getMnAyuda().setMnemonic(textos.getString("mnemonicAyuda").charAt(0));
+
+		getMnContenidos().setText(textos.getString("mnContenidos"));
+		getMnContenidos().setMnemonic(textos.getString("mnemonicContenidos").charAt(0));
+		getMnAcercaDe().setText(textos.getString("mnAcercaDe"));
+		getMnAcercaDe().setMnemonic(textos.getString("mnemonicAcercaDe").charAt(0));
 	}
 
 	////////////////////// PASAR VENTANAS CON EL CARDLAYOUT //////////////////////
@@ -1341,14 +1445,15 @@ public class VentanaPrincipal extends JFrame {
 		// Muestra la ventana
 		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "catalogoHoteles");
 	}
-	
+
 	/**
-	 * Muestra una ventana con la info de un hotel concreto en el que ha hecho click el usuario
+	 * Muestra una ventana con la info de un hotel concreto en el que ha hecho click
+	 * el usuario
 	 */
 	protected void mostrarInfoHotel() {
 		getPnInfoHotel().add(getPnBtAtras(), BorderLayout.SOUTH);
 		getBtAtras().setActionCommand("catalogoHoteles");
-		
+
 		// Muestra la ventana
 		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "infoHotel");
 	}
@@ -1574,7 +1679,7 @@ public class VentanaPrincipal extends JFrame {
 			getPnHoteles().removeAll();
 			repaint();
 		}
-		
+
 		// Si hay mínimo un castillo que cumple los filtros
 		else {
 			for (int i = 0; i < getPnHoteles().getComponentCount(); i++) {
@@ -1606,34 +1711,63 @@ public class VentanaPrincipal extends JFrame {
 		return encantamientosSeleccionados;
 	}
 
-	
 	private class MuestraInfoDiminutivos extends MouseAdapter {
-		
+
 		@Override
 		public void mousePressed(MouseEvent e) {
 			getTxInfoDiminutivos().setVisible(true);
 		}
-		
+
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			getTxInfoDiminutivos().setVisible(false);
 		}
 
 	}
-	
+
 	private void crearVentanaMisReservas() {
 		VentanaPedirDNIMisReservas misReservas = new VentanaPedirDNIMisReservas(this, app);
 		misReservas.setLocationRelativeTo(this);
 		misReservas.setVisible(true);
 	}
 
+	private void cargaAyuda() {
 
-	protected JPanel getPnInfoHotel() {
-		if (pnInfoHotel == null) {
-			pnInfoHotel = new JPanel();
-			pnInfoHotel.setBackground(Color.DARK_GRAY);
-			pnInfoHotel.setLayout(new BorderLayout(0, 0));
+		URL hsURL;
+		HelpSet hs;
+
+		try {
+			File fichero = new File("help/ayuda.hs");
+			hsURL = fichero.toURI().toURL();
+			hs = new HelpSet(null, hsURL);
 		}
-		return pnInfoHotel;
+
+		catch (Exception e) {
+			System.out.println("Ayuda no encontrada");
+			return;
+		}
+
+		HelpBroker hb = hs.createHelpBroker();
+
+		hb.initPresentation();
+
+		// Activa la tecla F1, es decir hace que funcione la ayuda pulsando F1
+		hb.enableHelpKey(getRootPane(), "intro", hs);
+
+		// Asocia la ayuda a un elemeento de menú o un botón. En este caso a un elemento
+		// de menú
+		hb.enableHelpOnButton(getMnContenidos(), "intro", hs);
+
+	}
+
+	private void mostrarAcercaDe() {
+		ResourceBundle textos = ResourceBundle.getBundle("rcs/textos", this.ubicacion);
+
+		String[] opciones = {textos.getString("aceptar") };
+
+		// JOptionPane internacionalizado
+		JOptionPane.showOptionDialog(this, textos.getString("contenidoAcercaDe"),
+				textos.getString("mnAcercaDe"), 2, JOptionPane.INFORMATION_MESSAGE, null, opciones,
+				textos.getString("opcionNo"));
 	}
 }
