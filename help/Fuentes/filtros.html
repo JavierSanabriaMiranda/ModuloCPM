@@ -1,0 +1,75 @@
+<html>
+
+<head>
+<title>Aplicar Filtros</title>
+<link rel=StyleSheet type="text/css" href="css/estilo.css" /> 
+</head>
+
+<body>
+
+<h1>Aplicar Filtros</h1>
+
+<p>
+    Horrotel dispone de 3 filtros que se pueden combinar para que el usuario encuentre el castillo que más 
+    se asemeje a sus necesidades. Estos filtros son:
+</p>	
+<ul>
+    <li>Ubicación: Permite seleccionar el país en el que queremos que se ubiquen los castillos</li>
+    <li>Precio máximo: Permite seleccionar el precio máximo por noche que queremos que tenga cada habitación 
+        del castillo</li>
+    <li>Encantamientos: Permite seleccionar todos los encantamientos que queremos que tenga el castillo. Cualquier
+        castillo que no disponga de al menos uno de los encantamientos seleccionados no será mostrado al usuario </li>
+</ul>
+
+<img src ="img/filtros.png" width="1200" height="200">
+
+<p>
+    Para seleccionar cada uno de los filtros, el usuario dispone de un botón en la parte superior de la página
+    de hoteles con el texto "Filtros". Al pulsar en este botón se desplegará el panel de filtros que le permitirá
+    configurarlos a su gusto.
+</p>
+<br>
+<h2>Filtro de Ubicación</h2>
+<p>
+    En el caso del filtro de ubicación, el usuario dispone de un combobox en el que se encuentran todas
+    las localizaciones en las que hay castillos disponibles. Si el usuario selecciona la opción "Todas",
+    indica que desea un castillo que se encuentre en cualquiera de las localizaciones disponibles
+</p>
+
+<h2>Filtro de Precio</h2>
+<p>
+    En el caso del filtro de precio, el usuario dispone de un slider con el que puede seleccionar el valor
+    del precio máximo que desea que tenga el castillo por noche en cada una de sus habitaciones. Para seleccionar
+    dicho precio, bastará con que el usuario mueva el slider de izquierda a derecha. Un texto encima del mismo le 
+    indicará al usuario el valor seleccionado
+</p>
+
+<h2>Filtro de Encantamientos</h2>
+<p>
+    En el caso del filtro de encantamientos, el usuario dispone de un conjunto de checkboxes con el
+    diminutivo del encantamiento al que representan. A su vez, dispone de un icono informativo en el que, 
+    al presionar, se mostrará el significado de cada uno de los diminutivos de los comboboxes.
+</p>
+<p>
+    Cuando el usuario seleccione un combobox, indica que el encantamiento al que hace referencia debe aparecer
+    en los castillos que se le muestren. Esto es acumulativo, si se seleccionan multiples encantamientos, todos
+    ellos apareceran en los castillos que se le muestren
+</p>
+
+<h2>Aplicar Filtros</h2>
+<p>
+    Una vez seleccionados los filtros, el usuario dispone en el mismo panel, a la derecha, un botón
+    que pone "Aplicar". Al pulsar dicho botón se le mostrará al usuario unicamente los hoteles que cumplen
+    con los filtros establecidos 
+</p>
+
+<h2>Quitar Filtros</h2>
+<p>
+    En caso de tener un filtro completo aplicado y querer eliminarlo, el usuario dispone en el mismo panel,
+    a la derecha, un botón que pone "Quitar Filtros". Al pulsar dicho botón se eliminarán todos los filtros
+    aplicados y se mostrarán de nuevo todos los hoteles
+</p>
+
+</body>
+
+</html>
