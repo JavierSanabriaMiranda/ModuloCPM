@@ -1,12 +1,12 @@
 package uo.cpm.l7.service;
 
-import java.awt.font.GlyphJustificationInfo;
 import java.util.List;
 
 import uo.cpm.l7.model.Hotel.CatalogoHoteles;
 import uo.cpm.l7.model.Hotel.Encantamiento;
 import uo.cpm.l7.model.Hotel.Hotel;
 import uo.cpm.l7.model.Hotel.ListaEncantamientos;
+import uo.cpm.l7.model.Hotel.Reserva;
 import uo.cpm.l7.model.Juego.Casilla;
 import uo.cpm.l7.model.Juego.Juego;
 import uo.cpm.l7.model.Juego.Personaje;
@@ -21,6 +21,9 @@ import uo.cpm.l7.util.FileUtil;
  *
  */
 public class Horrotel {
+	
+	private static final String DOCUMENTO_DESCUENTOS = "files/descuentos.dat";
+	private static final String DOCUMENTO_RESERVAS = "files/reservas.dat";
 	
 	/**
 	 * Juego que permite obtener descuento a los clientes
@@ -182,10 +185,32 @@ public class Horrotel {
 	}
 	
 	/**
+	 * @param DNI asociado al descuento
 	 * @return true si el DNI está guardado en el documento de descuentos
 	 */
 	public boolean isDNIGuardado(String DNI) {
-		return FileUtil.isInFile("files/descuentos.dat", DNI);
+		return FileUtil.isInFile(DOCUMENTO_DESCUENTOS, DNI);
+	}
+	
+	/**
+	 * @param DNI asociado a la reserva
+	 * @return true si hay al menos una reserva con ese DNI
+	 */
+	public boolean isReservaGuardada(String DNI) {
+		return FileUtil.isInFile(DOCUMENTO_RESERVAS, DNI);
+	}
+	
+	/**
+	 * Si el DNI esta guardado en el archivo, se retorna su descuento asociado 
+	 * 
+	 * @param DNI que guarda el descuento
+	 * @return descuento asociado al DNI
+	 */
+	public int getDescuento(String DNI) {
+		if (isDNIGuardado(DNI))
+			return FileUtil.getDescuento(DNI);
+		else
+			throw new IllegalArgumentException("El DNI recibido no se encuentra en la base de datos");
 	}
 	
 	/**
@@ -298,5 +323,90 @@ public class Horrotel {
 	
 	public double calcularPrecioReserva(int habitaciones, int dias, Hotel hotel) {
 		return hotel.getPrecioHabitacion() * habitaciones * dias;
+	}
+	
+	/**
+	 * Crea un objeto reserva y guarda dicha reserva en el archivo "reservas.dat"
+	 * 
+	 * @param DNI asociado a la reserva
+	 * @param nomYApell Nombre y Apellidos asociados a la reserva
+	 * @param email asociado a la reserva
+	 * @param codigo del castillo asociado a la reserva
+	 * @param fecha de entrada asociada a la reserva
+	 * @param dias de estancia asociados a la reserva
+	 * @param numHab número de habitaciones asociados a la reserva
+	 * @param precio asociado a la reserva
+	 * @param comentarios asociados a la reserva
+	 */
+	public void generarReserva(String DNI, String nomYApell, String email, String codigo, String fecha,
+			int dias, int numHab, double precio, String comentarios) {
+		Reserva reserva = new Reserva(DNI, nomYApell, email, codigo, fecha, dias, numHab, precio, comentarios);
+		reserva.registrarReserva();
+	}
+	
+	/**
+	 * Borra el descuento asociado al DNI introducido como parámetro de la base de datos "descuentos.dat"
+	 * @param DNI asociado al descuento a borrar
+	 */
+	public void borrarDescuento(String DNI) {
+		FileUtil.borrarDescuento(DNI);
+	}
+	
+	/**
+	 * Devuelve una lista con todas las reservas asociadas al DNI introducido como parámetro
+	 * 
+	 * @param DNI asociado a las reservas a buscar
+	 * @return lista de Strings que son las reservas asociadas al DNI introducido como parámetro
+	 */
+	private List<Reserva> getReservas(String DNI) {
+		return FileUtil.getReservas(DNI);
+	}
+	
+	/**
+	 * @param DNI asociado a las reservas
+	 * @return número de reservas asociadas al DNI
+	 */
+	public int getNumReservas(String DNI) {
+		return getReservas(DNI).size();
+	}
+	
+	/**
+	 * Devuelve la reserva que ocupa la posición "pos" en la lista de reservas
+	 * 
+	 * @param DNI asociado a la reserva
+	 * @param pos de la reserva en la lista de reservas
+	 * @return reserva que ocupa la posición "pos" en la lista de reservas
+	 */
+	public Reserva getReserva(String DNI, int pos) {
+		return getReservas(DNI).get(pos);
+	}
+	
+	/**
+	 * Devuelve el nombre del hotel en español según su código
+	 * 
+	 * @param codigo del hotel a encontrar
+	 * @return nombre en español del hotel
+	 */
+	public String getCastilloPorCodigoES(String codigo) {
+		return catalogo.getHotelPorCodigoES(codigo);
+	}
+	
+	/**
+	 * Devuelve el nombre del hotel en inglés según su código
+	 * 
+	 * @param codigo del hotel a encontrar
+	 * @return nombre en inglés del hotel
+	 */
+	public String getCastilloPorCodigoEN(String codigo) {
+		return catalogo.getHotelPorCodigoEN(codigo);
+	}
+	
+	/**
+	 * Cancela la reserva introducida como parámetro, es decir, la borra del archivo "reservas.dat"
+	 * @param reserva a cancelar
+	 */
+	public void cancelarReserva(Reserva reserva) {
+		String lineaReserva = reserva.getFormatoReserva();
+		FileUtil.borrarReserva(lineaReserva);
 	}
 }

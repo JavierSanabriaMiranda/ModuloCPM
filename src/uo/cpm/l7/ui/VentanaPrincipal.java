@@ -781,6 +781,11 @@ public class VentanaPrincipal extends JFrame {
 	private JButton getBtMisReservas() {
 		if (btMisReservas == null) {
 			btMisReservas = new JButton("");
+			btMisReservas.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					crearVentanaMisReservas();
+				}
+			});
 			btMisReservas.setFont(new Font("Arial", Font.PLAIN, 14));
 		}
 		return btMisReservas;
@@ -1276,7 +1281,7 @@ public class VentanaPrincipal extends JFrame {
 	/**
 	 * Muestra la ventana de inicio que es una presentación de la aplicación
 	 */
-	private void mostrarInicio() {
+	protected void mostrarInicio() {
 		getPnInicio().add(getPnTituloEIdiomas(), BorderLayout.NORTH);
 		((CardLayout) getPanelVentanas().getLayout()).show(getPanelVentanas(), "inicio");
 	}
@@ -1614,6 +1619,12 @@ public class VentanaPrincipal extends JFrame {
 			getTxInfoDiminutivos().setVisible(false);
 		}
 
+	}
+	
+	private void crearVentanaMisReservas() {
+		VentanaPedirDNIMisReservas misReservas = new VentanaPedirDNIMisReservas(this, app);
+		misReservas.setLocationRelativeTo(this);
+		misReservas.setVisible(true);
 	}
 
 

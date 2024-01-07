@@ -1,6 +1,6 @@
 package uo.cpm.l7.model.Hotel;
 
-import java.util.Date;
+import uo.cpm.l7.util.FileUtil;
 
 public class Reserva {
 
@@ -25,9 +25,9 @@ public class Reserva {
 	private String codigo;
 	
 	/**
-	 * Fecha para la que se reserva el hotel
+	 * Fecha para la que se reserva el hotel, tiene el formato localizado
 	 */
-	private Date fechaReserva;
+	private String fechaReserva;
 	
 	/**
 	 * Número de días que se realiza la reserva
@@ -62,7 +62,7 @@ public class Reserva {
 	 * @param precio final de la reserva
 	 * @param coment Comentarios del cliente
 	 */
-	public Reserva(String DNI, String nomYApell, String email, String cod, Date fecha, int dias, int numHab, double precio, String coment) {
+	public Reserva(String DNI, String nomYApell, String email, String cod, String fecha, int dias, int numHab, double precio, String coment) {
 		this.DNICliente = DNI;
 		this.nombreYApellidos = nomYApell;
 		this.email = email;
@@ -72,5 +72,65 @@ public class Reserva {
 		this.numHabitaciones = numHab;
 		this.precioFinal = precio;
 		this.comentarios = coment;
+	}
+	
+	/**
+	 * Guarda en el archivo "reservas.dat" todos los datos de la reserva en formato csv
+	 */
+	public void registrarReserva() {
+		String formatoReserva = getFormatoReserva();
+		
+		FileUtil.saveToFile("reservas", formatoReserva);
+	}
+	
+	/**
+	 * @return String con el formato que toma la reserva en el archivo "reservas.dat"
+	 */
+	public String getFormatoReserva() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.DNICliente);
+		sb.append(";");
+		sb.append(this.nombreYApellidos);
+		sb.append(";");
+		sb.append(this.email);
+		sb.append(";");
+		sb.append(this.codigo);
+		sb.append(";");
+		sb.append(this.fechaReserva);
+		sb.append(";");
+		sb.append(this.dias);
+		sb.append(";");
+		sb.append(this.numHabitaciones);
+		sb.append(";");
+		sb.append(this.precioFinal);
+		sb.append(";");
+		sb.append(this.comentarios);
+		sb.append("\n");
+		return sb.toString();
+	}
+	
+
+	public String getNombreYApellidos() {
+		return nombreYApellidos;
+	}
+
+	public String getFechaReserva() {
+		return fechaReserva;
+	}
+
+	public int getDias() {
+		return dias;
+	}
+
+	public int getNumHabitaciones() {
+		return numHabitaciones;
+	}
+
+	public double getPrecioFinal() {
+		return precioFinal;
+	}
+	
+	public String getCodigo() {
+		return this.codigo;
 	}
 }
